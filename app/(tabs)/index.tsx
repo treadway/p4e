@@ -12,6 +12,7 @@ import {
 // import ParallaxScrollView from "@/components/ParallaxScrollView";
 // import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { TextField } from "@/components/TextField";
 
 import * as React from "react";
 // import { LinearGradient } from "react-native-linear-gradient";
@@ -37,7 +38,7 @@ export default function HomeScreen() {
 						/> */}
 				</ImageBackground>
 				<View style={styles.emptyContent}>
-					<Text style={styles.emptyContent1}>Empty Content</Text>
+					<TextField>Text Field</TextField>
 				</View>
 			</ScrollView>
 			<ScrollView

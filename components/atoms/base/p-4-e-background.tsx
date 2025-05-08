@@ -1,14 +1,15 @@
 import { useStyles, createStyleSheet } from "styles";
 import { View } from "react-native";
-import { Image } from "react-exo/image";
+// import { Image } from "react-exo/image";
+import { Image } from "expo-image";
 import image from "assets/images/content/bottom-background-1.png";
 
-export interface P4ETopBackgroundProps {
+export interface P4EBackgroundProps {
 	/** Used to locate this view in end-to-end tests. */
 	testID?: string;
 }
 
-export function P4ETopBackground(props: P4ETopBackgroundProps) {
+export function P4EBackground(props: P4EBackgroundProps) {
 	const { styles } = useStyles(stylesheet);
 
 	return (

@@ -22,20 +22,19 @@ export function Label({ text = "label", testID }: LabelProps) {
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
 		flexDirection: "row",
-		width: 33,
 		justifyContent: "center",
 		alignItems: "center",
-		rowGap: 8,
-		columnGap: 8,
+		paddingHorizontal: 8,
+		backgroundColor: "white",
+		top: 16,
+		left: 16,
 	},
 	label: {
-		flexGrow: 1,
-		flexShrink: 0,
-		flexBasis: 0,
 		color: "rgba(91, 91, 91, 1)",
 		fontFamily: "Work Sans",
 		fontSize: 12,
 		fontStyle: "normal",
 		fontWeight: "700",
+		letterSpacing: 0.5,
 	},
 }));

@@ -27,7 +27,6 @@ export function InputField({
 
 	return (
 		<View style={styles.root} testID={testID ?? "529:19375"}>
-			{label && <Label text={label} testID="label" />}
 			<View
 				style={[
 					styles.shadowWrapper,
@@ -36,9 +35,15 @@ export function InputField({
 				]}
 				testID="529:19370"
 			>
-				{/* Web-only inner shadow */}
 				{Platform.OS === "web" && (
 					<View style={styles.shadowOverlay} pointerEvents="none" />
+				)}
+
+				{/* 🟦 Floating Label */}
+				{label && (
+					<View style={styles.labelWrapper}>
+						<Label text={label} testID="label" />
+					</View>
 				)}
 
 				<TextInput
@@ -80,7 +85,7 @@ const stylesheet = createStyleSheet((theme) => ({
 		alignItems: "center",
 		alignSelf: "stretch",
 		borderRadius: 16,
-		borderWidth: 1,
+		borderWidth: 2,
 		borderColor: "rgba(197, 197, 197, 1)",
 		backgroundColor: "white",
 		// shadowColor: "rgba(0, 0, 0, 0.2)",
@@ -93,7 +98,7 @@ const stylesheet = createStyleSheet((theme) => ({
 	textFieldMultiline: {
 		height: 100,
 		alignItems: "flex-start",
-		// paddingVertical: 8,
+		paddingVertical: 8,
 	},
 	input: {
 		flex: 1,
@@ -117,10 +122,10 @@ const stylesheet = createStyleSheet((theme) => ({
 		position: "relative",
 		height: 40,
 		borderRadius: 16,
-		borderWidth: 1,
+		borderWidth: 2,
 		borderColor: "rgba(197, 197, 197, 1)",
 		backgroundColor: "white",
-		overflow: "hidden",
+		// overflow: "hidden",
 		paddingHorizontal: 16,
 		flexDirection: "row",
 		alignItems: "center",
@@ -140,5 +145,12 @@ const stylesheet = createStyleSheet((theme) => ({
 				boxShadow: "inset 0 2px 5px rgba(0,0,0,0.15)",
 			},
 		}),
+	},
+	labelWrapper: {
+		position: "absolute",
+		top: -23, // adjust as needed
+		left: 0,
+		// paddingHorizontal: 4,
+		zIndex: 10,
 	},
 }));

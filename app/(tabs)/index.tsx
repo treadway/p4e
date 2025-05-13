@@ -8,9 +8,6 @@ import {
 	Text,
 } from "react-native";
 
-// import { HelloWave } from "@/components/HelloWave";
-// import ParallaxScrollView from "@/components/ParallaxScrollView";
-// import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { InputField } from "@/components/atoms/base/input-field";
 
@@ -39,11 +36,9 @@ export default function HomeScreen() {
 				</ImageBackground>
 				<View style={styles.emptyContent}>
 					<InputField
-						label="Description"
+						label="Label"
 						placeholder="Write something..."
 						multiline
-						value={"description"}
-						{/* onChangeText={setDescription} */}
 					/>
 				</View>
 			</ScrollView>
@@ -81,7 +76,7 @@ const styles = StyleSheet.create({
 	},
 	stepContainer: {
 		gap: 8,
-		marginBottom: 8,
+		// marginBottom: 8,
 	},
 	reactLogo: {
 		height: 178,

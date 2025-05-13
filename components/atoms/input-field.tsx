@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useStyles, createStyleSheet } from "styles";
 import { View, TextInput, Platform } from "react-native";
-import { Label } from "components/atoms/base/label";
+import { Label } from "components/atoms/label";
 
 export interface InputFieldProps {
 	label?: string;
@@ -80,17 +80,14 @@ const stylesheet = createStyleSheet((theme) => ({
 		paddingHorizontal: 16,
 		flexDirection: "row",
 		justifyContent: "center",
-		alignItems: "stretch", // or "flex-start" if needed
-		alignSelf: "stretch", // for full width
+		alignItems: "stretch",
+		alignSelf: "stretch",
 		alignItems: "center",
 		alignSelf: "stretch",
 		borderRadius: 16,
 		borderWidth: 2,
 		borderColor: "rgba(197, 197, 197, 1)",
 		backgroundColor: "white",
-		// shadowColor: "rgba(0, 0, 0, 0.2)",
-		// shadowRadius: 2,
-		// shadowOffset: { width: 1, height: 2 },
 	},
 	textFieldFocused: {
 		borderColor: "#0099CC",
@@ -125,7 +122,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		borderWidth: 2,
 		borderColor: "rgba(197, 197, 197, 1)",
 		backgroundColor: "white",
-		// overflow: "hidden",
 		paddingHorizontal: 16,
 		flexDirection: "row",
 		alignItems: "center",
@@ -148,9 +144,8 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 	labelWrapper: {
 		position: "absolute",
-		top: -23, // adjust as needed
+		top: -23,
 		left: 0,
-		// paddingHorizontal: 4,
 		zIndex: 10,
 	},
 }));

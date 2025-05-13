@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { ThemedView } from "@/components/ThemedView";
-import { InputField } from "@/components/atoms/base/input-field";
+import { InputField } from "@/components/atoms/input-field";
 
 import * as React from "react";
 // import { LinearGradient } from "react-native-linear-gradient";

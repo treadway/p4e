@@ -1,6 +1,6 @@
 import { useStyles, createStyleSheet } from "styles";
 import { View } from "react-native";
-import { BaseView } from "components/atoms/base/base-view";
+import { BaseView } from "components/atoms/base-view";
 // import { GetPointsVerificationForm } from "components/common/base/get-points-verification-form";
 // import { AlertModal } from "components/organisms/base/alert-modal";
 // import { NavBar } from "components/organisms/base/nav-bar";

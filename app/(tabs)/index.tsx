@@ -10,6 +10,7 @@ import {
 
 import { ThemedView } from "@/components/ThemedView";
 import { InputField } from "@/components/atoms/input-field";
+import { ParticipantHeader } from "@/components/organisms/participant-header";
 
 import * as React from "react";
 // import { LinearGradient } from "react-native-linear-gradient";
@@ -35,11 +36,12 @@ export default function HomeScreen() {
 						/> */}
 				</ImageBackground>
 				<View style={styles.emptyContent}>
-					<InputField
+					{/* <InputField
 						label="Label"
 						placeholder="Write something..."
 						multiline
-					/>
+					/> */}
+					<ParticipantHeader></ParticipantHeader>
 				</View>
 			</ScrollView>
 			<ScrollView

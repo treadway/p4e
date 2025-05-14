@@ -1,6 +1,6 @@
 import { useStyles, createStyleSheet } from "styles";
 import { View, Text } from "react-native";
-import { StarFill } from "components/atoms/star-fill";
+// import { StarFill } from "components/atoms/star-fill";
 
 export interface BadgeParticipantProps {
 	/** Used to locate this view in end-to-end tests. */
@@ -12,7 +12,7 @@ export function BadgeParticipant(props: BadgeParticipantProps) {
 
 	return (
 		<View style={styles.root} testID={props.testID ?? "67:12691"}>
-			<StarFill testID="67:12686" />
+			// <StarFill testID="67:12686" />
 			<Text style={styles.labelText} testID="67:12698">
 				{`2`}
 			</Text>

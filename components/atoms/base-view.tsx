@@ -1,6 +1,6 @@
 import { useStyles, createStyleSheet } from "styles";
 // import { useVariants } from "react-exo/utils";
-import { useVariants } from "@/utils/useVariants"; // or "@/utils/useVariants" if path alias is set
+import { useVariants } from "@/utils/useVariants";
 import { View } from "react-native";
 // import { EmptyContent } from "components/atoms/base/empty-content";
 import { P4EBackground } from "components/atoms/p-4-e-background";

@@ -2,7 +2,7 @@ import { useStyles, createStyleSheet } from "styles";
 // import { useVariants } from "react-exo/utils";
 import { useVariants } from "@/utils/useVariants";
 import { View, Text } from "react-native";
-import { TreeFill } from "components/common/base/tree-fill";
+import { TreeFill } from "components/common/tree-fill";
 
 export interface DataDisplayProps {
 	iconPosition: (typeof DataDisplayVariants.iconPosition)[number];

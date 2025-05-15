@@ -1,6 +1,7 @@
 import { useStyles, createStyleSheet } from "styles";
 import { View, Text } from "react-native";
-// import { StarFill } from "components/atoms/star-fill";
+import { Icon } from "components/atoms/icon";
+import CheckSvg from "assets/icons/tree-fill.svg";
 
 export interface BadgeParticipantProps {
 	/** Used to locate this view in end-to-end tests. */
@@ -12,7 +13,7 @@ export function BadgeParticipant(props: BadgeParticipantProps) {
 
 	return (
 		<View style={styles.root} testID={props.testID ?? "67:12691"}>
-			// <StarFill testID="67:12686" />
+			<Icon svg={CheckSvg} size={16} color="#007E33" stroke="#007E33" />
 			<Text style={styles.labelText} testID="67:12698">
 				{`2`}
 			</Text>

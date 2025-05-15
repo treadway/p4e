@@ -1,18 +1,9 @@
 import { useStyles, createStyleSheet } from "styles";
 // import { useVariants } from "react-exo/utils";
 import { useVariants } from "@/utils/useVariants";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 
-export interface ButtonProps {
-	background: (typeof ButtonVariants.background)[number];
-	icon: (typeof ButtonVariants.icon)[number];
-	size: (typeof ButtonVariants.size)[number];
-	state: (typeof ButtonVariants.state)[number];
-	text: (typeof ButtonVariants.text)[number];
-	/** Used to locate this view in end-to-end tests. */
-	testID?: string;
-}
-
+// ✅ Add this object definition before it's used
 export const ButtonVariants = {
 	background: ["On", "Off"],
 	icon: ["Off", "Left", "Right", "Only"],
@@ -21,8 +12,18 @@ export const ButtonVariants = {
 	text: ["On", "Off"],
 } as const;
 
+export interface ButtonProps {
+	background: (typeof ButtonVariants.background)[number];
+	icon: (typeof ButtonVariants.icon)[number];
+	size: (typeof ButtonVariants.size)[number];
+	state: (typeof ButtonVariants.state)[number];
+	text: (typeof ButtonVariants.text)[number];
+	onPress?: () => void;
+	testID?: string;
+}
+
 export function Button(props: ButtonProps) {
-	const { text, icon, size, background, state } = props;
+	const { text, icon, size, background, state, onPress } = props;
 	const { styles } = useStyles(stylesheet);
 	const { vstyles } = useVariants(
 		ButtonVariants,
@@ -30,12 +31,22 @@ export function Button(props: ButtonProps) {
 		styles
 	);
 
+	const isDisabled = state === "Disabled";
+
 	return (
-		<View style={vstyles.root()} testID={props.testID ?? "10:2064"}>
+		<Pressable
+			onPress={onPress}
+			disabled={isDisabled}
+			style={({ pressed }) => [
+				vstyles.root(),
+				pressed && !isDisabled && { opacity: 0.8 },
+			]}
+			testID={props.testID ?? "10:2064"}
+		>
 			<Text style={vstyles.text()} testID="34:2332">
 				{`Text`}
 			</Text>
-		</View>
+		</Pressable>
 	);
 }
 

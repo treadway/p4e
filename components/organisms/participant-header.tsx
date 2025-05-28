@@ -6,6 +6,8 @@ import { BadgeParticipant } from "components/atoms/badge-participant";
 import { Button } from "components/atoms/button";
 import { DataDisplay } from "components/atoms/data-display";
 import { ParticipantImage } from "components/atoms/participant-image";
+import EditIcon from "@/assets/icons/pencil-fill.svg";
+import { Icon } from "@/components/atoms/icon";
 
 export interface ParticipantHeaderProps {
 	curvedBottom: (typeof ParticipantHeaderVariants.curvedBottom)[number];
@@ -32,8 +34,15 @@ export function ParticipantHeader(props: ParticipantHeaderProps) {
 		<View style={vstyles.root()} testID={props.testID ?? "77:34880"}>
 			<View style={vstyles.participant()} testID="68:12858">
 				<View style={vstyles.imageAndBadge()} testID="68:12850">
-					<ParticipantImage testID="68:12851" />
-					<BadgeParticipant testID="68:12852" />
+					<ParticipantImage
+						uri={require("assets/images/content/running-city-park.png")}
+						testID="68:12851"
+					/>
+					{edit === "True" && (
+						<View style={vstyles.editBadge()} testID="114:188857">
+							<BadgeParticipant testID="114:188858" />
+						</View>
+					)}
 				</View>
 			</View>
 			<View style={vstyles.participantInfo()} testID="68:12932">
@@ -42,11 +51,9 @@ export function ParticipantHeader(props: ParticipantHeaderProps) {
 						<DataDisplay testID="68:12934" iconPosition="Left" size="Small" />
 					</View>
 					<View style={vstyles.imageAndBadgeCont()} testID="68:12988">
-						<View style={vstyles.imageAndBadge2()} testID="68:12990">
-							<ParticipantImage testID="68:12991" />
-							<View style={vstyles.editBadge()} testID="114:188857">
-								<BadgeParticipant testID="114:188858" />
-							</View>
+						<ParticipantImage testID="68:12991" />
+						<View style={vstyles.editBadge()} testID="114:188857">
+							<BadgeParticipant testID="114:188858" />
 						</View>
 					</View>
 					<View style={vstyles.getPoints()} testID="70:13787">
@@ -73,12 +80,12 @@ export function ParticipantHeader(props: ParticipantHeaderProps) {
 				<View style={vstyles.bottomCircle2()} testID="70:24620"></View>
 			</View>
 			<Button
-				testID="114:188479"
 				background="Off"
 				icon="Only"
 				size="Small"
 				state="Active"
 				text="Off"
+				iconNode={<Icon svg={EditIcon} color="#00C851" size={16} />}
 			/>
 		</View>
 	);
@@ -107,7 +114,20 @@ const stylesheet = createStyleSheet((theme) => ({
 	imageAndBadge: {
 		width: 128,
 		height: 128,
-		flexShrink: 0,
+		position: "absolute", // float it on top of the card
+		top: -64,
+		zIndex: 10,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	editBadge: {
+		position: "absolute",
+		bottom: 0,
+		right: 0,
+		width: 32,
+		height: 32,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	participantInfo: {
 		paddingTop: 0,

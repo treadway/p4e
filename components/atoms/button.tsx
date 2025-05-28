@@ -1,9 +1,23 @@
 import { useStyles, createStyleSheet } from "styles";
-// import { useVariants } from "react-exo/utils";
 import { useVariants } from "@/utils/useVariants";
-import { View, Text, Pressable } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { ReactNode } from "react";
 
-// ✅ Add this object definition before it's used
+export interface ButtonProps {
+	background: (typeof ButtonVariants.background)[number];
+	icon: (typeof ButtonVariants.icon)[number];
+	size: (typeof ButtonVariants.size)[number];
+	state: (typeof ButtonVariants.state)[number];
+	text: (typeof ButtonVariants.text)[number];
+	label?: string;
+	iconNode?: ReactNode;
+	onPress?: () => void;
+	iconColorOverride?: string;
+	textColorOverride?: string;
+	borderColorOverride?: string;
+	testID?: string;
+}
+
 export const ButtonVariants = {
 	background: ["On", "Off"],
 	icon: ["Off", "Left", "Right", "Only"],
@@ -12,18 +26,20 @@ export const ButtonVariants = {
 	text: ["On", "Off"],
 } as const;
 
-export interface ButtonProps {
-	background: (typeof ButtonVariants.background)[number];
-	icon: (typeof ButtonVariants.icon)[number];
-	size: (typeof ButtonVariants.size)[number];
-	state: (typeof ButtonVariants.state)[number];
-	text: (typeof ButtonVariants.text)[number];
-	onPress?: () => void;
-	testID?: string;
-}
-
-export function Button(props: ButtonProps) {
-	const { text, icon, size, background, state, onPress } = props;
+export function Button({
+	text,
+	icon,
+	size,
+	background,
+	state,
+	label,
+	iconNode,
+	onPress,
+	iconColorOverride,
+	textColorOverride,
+	borderColorOverride,
+	testID,
+}: ButtonProps) {
 	const { styles } = useStyles(stylesheet);
 	const { vstyles } = useVariants(
 		ButtonVariants,
@@ -33,6 +49,32 @@ export function Button(props: ButtonProps) {
 
 	const isDisabled = state === "Disabled";
 
+	// Defaults from tokens.json (embedded directly)
+	const defaultIconColor =
+		background === "On"
+			? "#FFFFFF"
+			: state === "Disabled"
+			? "#729D82"
+			: "#00C851";
+
+	const defaultTextColor =
+		background === "On"
+			? "#FFFFFF"
+			: state === "Disabled"
+			? "#729D82"
+			: "#00C851";
+
+	const defaultBorderColor =
+		background === "On"
+			? "transparent"
+			: state === "Disabled"
+			? "#729D82"
+			: "#00C851";
+
+	const iconColor = iconColorOverride || defaultIconColor;
+	const textColor = textColorOverride || defaultTextColor;
+	const borderColor = borderColorOverride || defaultBorderColor;
+
 	return (
 		<Pressable
 			onPress={onPress}
@@ -40,12 +82,19 @@ export function Button(props: ButtonProps) {
 			style={({ pressed }) => [
 				vstyles.root(),
 				pressed && !isDisabled && { opacity: 0.8 },
+				borderColor ? { borderColor } : {},
 			]}
-			testID={props.testID ?? "10:2064"}
+			testID={testID}
 		>
-			<Text style={vstyles.text()} testID="34:2332">
-				{`Text`}
-			</Text>
+			<View style={{ flexDirection: "row", alignItems: "center" }}>
+				{(icon === "Left" || icon === "Only") && iconNode}
+				{text === "On" && icon !== "Only" && (
+					<Text style={[vstyles.text(), { color: textColor }]} testID="34:2332">
+						{label ?? "Text"}
+					</Text>
+				)}
+				{icon === "Right" && iconNode}
+			</View>
 		</Pressable>
 	);
 }
@@ -63,236 +112,19 @@ const stylesheet = createStyleSheet((theme) => ({
 		rowGap: 6,
 		columnGap: 6,
 		flexShrink: 0,
-		borderBottomLeftRadius: 16,
-		borderBottomRightRadius: 16,
-		borderTopLeftRadius: 16,
-		borderTopRightRadius: 16,
-		backgroundColor: "Success.Light.Green",
-		shadowColor: "rgba(0, 0, 0, 0.20000000298023224)",
+		borderRadius: theme.radii.button,
+		backgroundColor: theme.colors.success,
+		shadowColor: "rgba(0, 0, 0, 0.2)",
 		shadowRadius: 2,
 		shadowOffset: { width: 1, height: 2 },
-	},
-	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		width: 58,
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-	},
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
-		height: "unset" as any,
-		flexShrink: "unset" as any,
-		flexDirection: "row",
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-	},
-	rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
-		height: "unset" as any,
-		flexShrink: "unset" as any,
-		flexDirection: "row",
-	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-	},
-	rootTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		backgroundColor: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateActive: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		width: 40,
-		paddingLeft: 0,
-		paddingRight: 0,
-		borderBottomLeftRadius: 32,
-		borderBottomRightRadius: 32,
-		borderTopLeftRadius: 32,
-		borderTopRightRadius: 32,
-		borderWidth: 1,
-		borderStyle: "solid",
-		borderColor: "rgba(0, 200, 81, 1)",
-		backgroundColor: "rgba(255, 255, 255, 1)",
-	},
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		width: 24,
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-		borderBottomLeftRadius: 34,
-		borderBottomRightRadius: 34,
-		borderTopLeftRadius: 34,
-		borderTopRightRadius: 34,
-		borderWidth: 1,
-		borderStyle: "solid",
-		borderColor: "rgba(0, 200, 81, 1)",
-		backgroundColor: "rgba(255, 255, 255, 1)",
-	},
-	rootTextOnIconOffSizeDefaultBackgroundOnStateDisabled: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		width: 58,
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateDisabled: {
-		height: "unset" as any,
-		flexShrink: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconRightSizeDefaultBackgroundOnStateDisabled: {
-		height: "unset" as any,
-		flexShrink: "unset" as any,
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
-		shadowColor: "unset" as any,
-		shadowRadius: "unset" as any,
-		shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
+		fontFamily: theme.typography.fontFamily,
+		fontSize: theme.typography.fontSize.lg,
 	},
 	text: {
-		color: "Neutral.White.100",
+		color: theme.colors.neutral.white["100"],
+		fontWeight: theme.typography.fontWeight.bold,
 		textAlign: "center",
-		fontFamily: "Work Sans",
-		fontSize: 16,
 		fontStyle: "normal",
 		fontWeight: "700",
-	},
-	textTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
-	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
-	},
-	textTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
-	},
-	textTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
-	textTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
-	textTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
-	textTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
-	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
-	},
-	textTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
 	},
 }));

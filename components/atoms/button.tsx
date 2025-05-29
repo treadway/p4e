@@ -5,11 +5,11 @@ import { ReactNode } from "react";
 import { tokens } from "styles/tokens";
 
 export interface ButtonProps {
-	background: (typeof ButtonVariants.background)[number];
-	icon: (typeof ButtonVariants.icon)[number];
-	size: (typeof ButtonVariants.size)[number];
-	state: (typeof ButtonVariants.state)[number];
-	text: (typeof ButtonVariants.text)[number];
+	background: "On" | "Off";
+	icon: "Off" | "Left" | "Right" | "Only";
+	size: "Default" | "Small";
+	state: "Active" | "Disabled";
+	text: "On" | "Off";
 	label?: string;
 	iconNode?: ReactNode;
 	onPress?: () => void;
@@ -29,25 +29,25 @@ export const ButtonVariants = {
 
 const getColors = {
 	icon: (bg: string, state: string) => {
-		if (bg === "On") return tokens.colors.neutral.white[100];
-		if (state === "Disabled") return tokens.colors.success.default;
-		return tokens.colors.success.light.green;
+		if (bg === "On") return tokens.colors.neutral.white["100"];
+		if (state === "Disabled") return tokens.colors.disabled;
+		return tokens.colors.success.light;
 	},
 	text: (bg: string, state: string) => {
-		if (bg === "On") return tokens.colors.neutral.white[100];
-		if (state === "Disabled") return tokens.colors.success.default;
-		return tokens.colors.success.light.green;
+		if (bg === "On") return tokens.colors.neutral.white["100"];
+		if (state === "Disabled") return tokens.colors.disabled;
+		return tokens.colors.success.light;
 	},
 	border: (bg: string, state: string) => {
 		if (bg === "On") return "transparent";
-		if (state === "Disabled") return tokens.colors.success.default;
-		return tokens.colors.success.light.green;
+		if (state === "Disabled") return tokens.colors.disabled;
+		return tokens.colors.success.light;
 	},
 	bg: (bg: string, state: string) => {
-		if (state === "Disabled") return tokens.colors.success.muted;
+		if (state === "Disabled") return tokens.colors.disabled;
 		return bg === "On"
-			? tokens.colors.success.default
-			: tokens.colors.neutral.white[100];
+			? tokens.colors.success.dark
+			: tokens.colors.neutral.white["100"];
 	},
 };
 
@@ -108,257 +108,113 @@ export function Button({
 
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
-		flexDirection: "column",
-		justifyContent: "center",
-		alignItems: "center",
-		borderRadius: theme.radii.button,
-		borderWidth: 1,
-		borderColor: "transparent",
-		backgroundColor: theme.colors.success,
-		paddingHorizontal: 16,
-		paddingVertical: 8,
-		shadowColor: "rgba(0, 0, 0, 0.2)",
-		shadowRadius: 2,
-		shadowOffset: { width: 1, height: 2 },
-	},
-
-	// Variants for layout
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
-		width: 24,
-		height: 24,
-		borderRadius: 34,
-		borderWidth: 1,
-		borderColor: tokens.colors.success.light.green,
-		backgroundColor: tokens.colors.neutral.white[100],
-		padding: 0,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
 		flexDirection: "row",
-		width: 24,
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-		borderRadius: 34,
-		borderWidth: 1,
-		// borderStyle: "solid",
-		borderColor: "rgba(0, 200, 81, 1)",
-		backgroundColor: "rgba(255, 255, 255, 1)",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: theme.button.radii,
+		borderWidth: theme.button.border.width,
+		borderColor: theme.button.border.color,
+		borderStyle: theme.button.border.style,
+		backgroundColor: theme.colors.success,
+		paddingHorizontal: theme.button.padding.horz,
+		paddingVertical: theme.button.padding.vert,
+		shadowColor: theme.button.shadow.color,
+		shadowRadius: theme.button.shadow.blur,
+		shadowOffset: {
+			width: theme.button.shadow.x,
+			height: theme.button.shadow.y,
+		},
+	},
+
+	// 🔽 ADD FULL VARIANT OVERRIDES
+
+	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
+		width: theme.button.size.small,
+		height: theme.button.size.small,
+		paddingHorizontal: 0,
+		backgroundColor: theme.colors.neutral.white,
+	},
+
+	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
+		height: theme.button.size.small,
+		paddingHorizontal: 0,
+	},
+
+	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
+		height: theme.button.size.small,
+		paddingHorizontal: 0,
+	},
+
+	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
+		height: theme.button.size.small,
+		paddingHorizontal: 0,
 	},
 
 	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		width: 58,
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horz,
 	},
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
-		// height: "unset" as any,
-		// flexShrink: "unset" as any,
-		flexDirection: "row",
-	},
+
 	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horz,
 	},
-	rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
-		// height: "unset" as any,
-		// flexShrink: "unset" as any,
-		flexDirection: "row",
-	},
+
 	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horz,
 	},
+
 	rootTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
+		height: theme.button.size.default,
+		paddingHorizontal: 0,
 	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
+
 	rootTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
+		height: theme.button.size.default,
+		paddingHorizontal: 0,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
-	},
+
 	rootTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 32,
-		paddingLeft: 0,
-		paddingRight: 0,
+		height: theme.button.size.default,
+		paddingHorizontal: 0,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		// backgroundColor: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 0,
-		paddingRight: 0,
+
+	rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
+		height: theme.button.size.default,
+		paddingHorizontal: theme.button.padding.horz,
 	},
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateActive: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		width: 40,
-		paddingLeft: 0,
-		paddingRight: 0,
-		borderRadius: 32,
-		borderWidth: 1,
-		// borderStyle: "solid",
-		borderColor: "rgba(0, 200, 81, 1)",
-		backgroundColor: "rgba(255, 255, 255, 1)",
-	},
-	rootTextOnIconOffSizeDefaultBackgroundOnStateDisabled: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		width: 58,
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateDisabled: {
-		// height: "unset" as any,
-		// flexShrink: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconRightSizeDefaultBackgroundOnStateDisabled: {
-		// height: "unset" as any,
-		// flexShrink: "unset" as any,
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		backgroundColor: "rgba(114, 157, 130, 1)",
-	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
-		// shadowColor: "unset" as any,
-		// shadowRadius: "unset" as any,
-		// shadowOffset: "unset" as any,
-		flexDirection: "row",
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		backgroundColor: "rgba(114, 157, 130, 1)",
+
+	rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
+		height: theme.button.size.default,
+		paddingHorizontal: theme.button.padding.horz,
 	},
 
 	textTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
+		fontSize: theme.typography.fontSize.sm,
 	},
+
 	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
+		fontSize: theme.typography.fontSize.sm,
 	},
+
 	textTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		fontSize: 12,
+		fontSize: theme.typography.fontSize.sm,
 	},
-	textTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
+
 	textTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
-	textTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-	},
-	textTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		color: "Success.Light.Green",
-		fontSize: 12,
-	},
-	textTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
-	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
-	},
-	textTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
-		fontSize: 12,
+		fontSize: theme.typography.fontSize.sm,
+		color: theme.colors.success.light,
 	},
 
 	content: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 6,
+		gap: theme.spacing.xs,
 	},
 
 	text: {
 		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize.md,
+		fontSize: theme.typography.fontSize.sm,
 		fontWeight: theme.typography.fontWeight.bold,
-		color: theme.colors.neutral.white[100],
 		textAlign: "center",
 	},
 }));

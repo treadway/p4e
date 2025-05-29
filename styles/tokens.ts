@@ -98,8 +98,13 @@ export const tokens = {
 		navBottom: 84,
 		auto: "auto",
 	},
+	padding: {
+		formHorizontalDefault: 16,
+		formHorizontalSmall: 8,
+		formVertical: 8,
+	},
 	borderRadius: {
-		card: 16,
+		default: 16,
 		image: 12,
 		sheet: [16, 16, 0, 0],
 	},

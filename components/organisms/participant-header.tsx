@@ -85,7 +85,7 @@ export function ParticipantHeader(props: ParticipantHeaderProps) {
 				size="Small"
 				state="Active"
 				text="Off"
-				iconNode={<Icon svg={EditIcon} color="#00C851" size={16} />}
+				iconNode={<Icon svg={EditIcon} color="#00C851" size={14} />}
 			/>
 		</View>
 	);

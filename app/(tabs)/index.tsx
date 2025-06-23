@@ -44,28 +44,6 @@ export default function HomeScreen() {
 					<ParticipantHeader></ParticipantHeader>
 				</View>
 			</ScrollView>
-			<ScrollView
-				style={styles.imagePositionbottom}
-				contentContainerStyle={styles.imagePositiontopContainerContent}
-			>
-				<View style={[styles.p4eTopBackground, styles.p4ePosition]}>
-					<Image
-						style={styles.imageIcon}
-						resizeMode="cover"
-						source={require("@/assets/images/content/bottom-background-1.png")}
-					/>
-					{/* <LinearGradient
-							style={[styles.gradient1, styles.gradientLayout]}
-							locations={[0.13, 0.31]}
-							colors={["rgba(216, 235, 223, 0)", "#d8ebdf"]}
-							useAngle={true}
-							angle={180}
-						/> */}
-				</View>
-				<View style={styles.emptyContent}>
-					<Text style={styles.emptyContent1}>Empty Content</Text>
-				</View>
-			</ScrollView>
 		</ThemedView>
 	);
 }

@@ -1,22 +1,25 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import { ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
+import { useTheme } from "styles";
 
 export interface IconProps {
-	svg: React.ComponentType<React.SVGProps<SVGSVGElement>>; // SVG component
+	svg: React.FC<SvgProps>;
 	color?: string;
+	stroke?: string;
 	size?: number;
-	testID?: string;
+	style?: ViewStyle;
 }
 
-export function Icon({
-	svg: Svg,
-	color = "black",
-	size = 24,
-	testID,
-}: IconProps) {
+export function Icon({ svg: Svg, color, stroke, size = 24, style }: IconProps) {
+	const theme = useTheme();
+
 	return (
-		<View style={{ width: size, height: size }} testID={testID}>
-			<Svg width={size} height={size} fill={color} />
-		</View>
+		<Svg
+			width={size}
+			height={size}
+			fill={color ?? theme.colors.success}
+			stroke={stroke}
+			style={style}
+		/>
 	);
 }

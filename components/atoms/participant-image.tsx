@@ -2,7 +2,7 @@ import { useStyles, createStyleSheet } from "styles";
 import { View, Image } from "react-native";
 
 export interface ParticipantImageProps {
-	uri?: string | ReturnType<typeof require>; // support both remote and local
+	uri?: string | ReturnType<typeof require>;
 	testID?: string;
 }
 
@@ -14,7 +14,7 @@ export function ParticipantImage({ uri, testID }: ParticipantImageProps) {
 
 	return (
 		<View style={styles.root} testID={testID ?? "67:12743"}>
-			<View style={styles.innerCircle} testID="67:12739"></View>
+			<View style={styles.innerCircle} testID="67:12739" />
 			<Image
 				source={
 					typeof resolvedSource === "string"
@@ -29,34 +29,39 @@ export function ParticipantImage({ uri, testID }: ParticipantImageProps) {
 	);
 }
 
-const stylesheet = createStyleSheet(() => ({
+const stylesheet = createStyleSheet((theme) => ({
 	root: {
-		width: 128,
-		height: 128,
-		borderRadius: 64,
+		width: theme.participantHeader.participantImage.size,
+		height: theme.participantHeader.participantImage.size,
+		borderRadius: theme.participantHeader.participantImage.size / 2,
 		overflow: "hidden",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#EEE", // fallback color
+		backgroundColor: theme.colors.background ?? "#EEE",
+		shadowColor: theme.card.shadow.color,
+		shadowRadius: theme.card.shadow.blur,
+		shadowOffset: {
+			width: theme.card.shadow.x,
+			height: theme.card.shadow.y,
+		},
 	},
+
 	image: {
 		width: "100%",
 		height: "100%",
-		borderRadius: 64,
+		borderRadius: theme.participantHeader.participantImage.size / 2,
 		borderWidth: 4,
-		borderColor: "rgba(237, 237, 237, 1)",
+		borderColor: "rgba(237, 237, 237, 1)", // consider tokenizing if reused
 	},
+
 	innerCircle: {
 		flexGrow: 1,
 		flexShrink: 0,
 		flexBasis: 0,
 		alignSelf: "stretch",
-		borderBottomLeftRadius: 128,
-		borderBottomRightRadius: 128,
-		borderTopLeftRadius: 128,
-		borderTopRightRadius: 128,
+		borderRadius: theme.participantHeader.participantImage.size,
 		borderWidth: 4,
 		borderStyle: "solid",
-		borderColor: "rgba(237, 237, 237, 1)",
+		borderColor: "rgba(237, 237, 237, 1)", // consider tokenizing if reused
 	},
 }));

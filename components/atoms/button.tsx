@@ -106,115 +106,117 @@ export function Button({
 	);
 }
 
-const stylesheet = createStyleSheet((theme) => ({
-	root: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-		borderRadius: theme.button.radii,
-		borderWidth: theme.button.border.width,
-		borderColor: theme.button.border.color,
-		borderStyle: theme.button.border.style,
-		backgroundColor: theme.colors.success,
-		paddingHorizontal: theme.button.padding.horz,
-		paddingVertical: theme.button.padding.vert,
-		shadowColor: theme.button.shadow.color,
-		shadowRadius: theme.button.shadow.blur,
-		shadowOffset: {
-			width: theme.button.shadow.x,
-			height: theme.button.shadow.y,
+const { styles } = useStyles(
+	createStyleSheet((theme) => ({
+		root: {
+			flexDirection: "row",
+			justifyContent: "center",
+			alignItems: "center",
+			borderRadius: theme.button.radii,
+			borderWidth: theme.button.border.width,
+			borderColor: theme.button.border.color,
+			borderStyle: theme.button.border.style,
+			backgroundColor: theme.colors.success,
+			paddingHorizontal: theme.button.padding.horz,
+			paddingVertical: theme.button.padding.vert,
+			shadowColor: theme.button.shadow.color,
+			shadowRadius: theme.button.shadow.blur,
+			shadowOffset: {
+				width: theme.button.shadow.x,
+				height: theme.button.shadow.y,
+			},
 		},
-	},
 
-	// 🔽 ADD FULL VARIANT OVERRIDES
+		// 🔽 ADD FULL VARIANT OVERRIDES
 
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
-		width: theme.button.size.small,
-		height: theme.button.size.small,
-		paddingHorizontal: 0,
-		backgroundColor: theme.colors.neutral.white,
-	},
+		rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
+			width: theme.button.size.small,
+			height: theme.button.size.small,
+			paddingHorizontal: 0,
+			backgroundColor: theme.colors.neutral.white,
+		},
 
-	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
-	},
+		rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: theme.button.padding.horz,
+		},
 
-	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
-	},
+		rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: theme.button.padding.horz,
+		},
 
-	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
-	},
+		rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
+			height: theme.button.size.small,
+			paddingHorizontal: theme.button.padding.horz,
+		},
 
-	rootTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconOffSizeDefaultBackgroundOffStateActive: {
+			height: theme.button.size.default,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
+			height: theme.button.size.default,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
-	},
+		rootTextOnIconRightSizeDefaultBackgroundOffStateActive: {
+			height: theme.button.size.default,
+			paddingHorizontal: 0,
+		},
 
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
-	},
+		rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
+			height: theme.button.size.default,
+			paddingHorizontal: theme.button.padding.horz,
+		},
 
-	rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
-	},
+		rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
+			height: theme.button.size.default,
+			paddingHorizontal: theme.button.padding.horz,
+		},
 
-	textTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.sm,
-	},
+		textTextOnIconOffSizeSmallBackgroundOnStateActive: {
+			fontSize: theme.typography.fontSize.sm,
+		},
 
-	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.sm,
-	},
+		textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
+			fontSize: theme.typography.fontSize.sm,
+		},
 
-	textTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.sm,
-	},
+		textTextOnIconRightSizeSmallBackgroundOnStateActive: {
+			fontSize: theme.typography.fontSize.sm,
+		},
 
-	textTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		fontSize: theme.typography.fontSize.sm,
-		color: theme.colors.success.light,
-	},
+		textTextOnIconOffSizeSmallBackgroundOffStateActive: {
+			fontSize: theme.typography.fontSize.sm,
+			color: theme.colors.success.light,
+		},
 
-	content: {
-		gap: theme.spacing.xs,
-	},
+		content: {
+			gap: theme.spacing.xs,
+		},
 
-	text: {
-		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize.sm,
-		fontWeight: theme.typography.fontWeight.bold,
-		textAlign: "center",
-	},
-}));
+		text: {
+			fontFamily: theme.typography.fontFamily,
+			fontSize: theme.typography.fontSize.sm,
+			fontWeight: theme.typography.fontWeight.bold,
+			textAlign: "center",
+		},
+	}))
+);

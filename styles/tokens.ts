@@ -63,6 +63,7 @@ export const tokens = {
 			dark: "#0099CC",
 		},
 		background: {
+			default: "#FFFFFF",
 			complementary1: "#D8E9EB",
 			complementary2: "#D8EBDF",
 			complementary3: "#EBDCD8",
@@ -71,19 +72,19 @@ export const tokens = {
 			modal: "rgba(0, 0, 0, 0.35)",
 		},
 		text: {
-			title: "#000000", // from black.100
-			subtitle: "#2D2D2D", // from black.83
-			data: "#5B5B5B", // from black.66
+			title: "#000000",
+			subtitle: "#2D2D2D",
+			data: "#5B5B5B",
 		},
 		disabled: "#729D82",
 		white: "#FFFFFF",
 		success: {
-			light: "#00C851", // same as link.light
-			dark: "#007E33", // same as link.dark
+			light: "#00C851",
+			dark: "#007E33",
 		},
 		neutral: {
 			white: {
-				"100": "#FFFFFF", // reference from your usage
+				"100": "#FFFFFF",
 			},
 		},
 	},
@@ -109,13 +110,16 @@ export const tokens = {
 		sheet: [16, 16, 0, 0],
 	},
 	sizing: {
+		base: 360,
 		formDefault: 40,
 		formSmall: 24,
+		participantImage: 128,
+		badge: 32,
 	},
 	border: {
 		button: {
 			width: 1,
-			color: "#00C851", // from link.light
+			color: "#00C851",
 			style: "inside",
 		},
 	},
@@ -126,6 +130,7 @@ export const tokens = {
 			blur: 4,
 			spread: 0,
 			color: "rgba(0,0,0,0.25)",
+			opacity: 1,
 		},
 		nav: {
 			x: 0,

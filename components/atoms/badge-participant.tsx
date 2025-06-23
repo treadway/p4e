@@ -10,10 +10,21 @@ export interface BadgeParticipantProps {
 
 export function BadgeParticipant(props: BadgeParticipantProps) {
 	const { styles } = useStyles(stylesheet);
+	const { styles: iconStyles } = useStyles((theme) => ({
+		icon: {
+			color: theme.badge.color,
+			stroke: theme.badge.color,
+		},
+	}));
 
 	return (
 		<View style={styles.root} testID={props.testID ?? "67:12691"}>
-			<Icon svg={CheckSvg} size={16} color="#007E33" stroke="#007E33" />
+			<Icon
+				svg={CheckSvg}
+				size={16}
+				color={iconStyles.icon.color}
+				stroke={iconStyles.icon.stroke}
+			/>
 			<Text style={styles.labelText} testID="67:12698">
 				{`2`}
 			</Text>
@@ -26,22 +37,21 @@ const stylesheet = createStyleSheet((theme) => ({
 		width: 32,
 		height: 32,
 		aspectRatio: 1,
-		borderBottomLeftRadius: 128,
-		borderBottomRightRadius: 128,
-		borderTopLeftRadius: 128,
-		borderTopRightRadius: 128,
+		borderRadius: 32,
 		borderWidth: 2,
 		borderStyle: "solid",
-		borderColor: "rgba(237, 237, 237, 1)",
-		backgroundColor: "rgba(255, 255, 255, 0.6392157077789307)",
+		borderColor: theme.colors.neutral.white["100"],
+		backgroundColor: "rgba(255, 255, 255, 0.64)",
+		justifyContent: "center",
+		alignItems: "center",
 	},
+
 	labelText: {
-		color: "rgba(255, 255, 255, 1)",
+		color: theme.colors.white,
 		textAlign: "center",
-		fontFamily: "Work Sans",
-		fontSize: 18,
-		fontStyle: "normal",
-		fontWeight: "700",
+		fontFamily: theme.typography.fontFamily,
+		fontSize: theme.typography.fontSize.md,
+		fontWeight: theme.typography.fontWeight.bold,
 		lineHeight: 26,
 	},
 }));

@@ -1,60 +1,52 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
+// components/atoms/ThemedText.tsx
+import { Text, type TextProps } from "react-native";
+import { useTheme } from "styles";
 
 export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+	lightColor?: string;
+	darkColor?: string;
+	type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
 };
 
 export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
+	style,
+	lightColor,
+	darkColor,
+	type = "default",
+	...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+	const theme = useTheme();
+	const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+	// pull sizes/weights from theme.typography
+	const typography = {
+		default: {
+			fontSize: theme.typography.fontSize.default,
+			lineHeight: theme.typography.lineHeight.default,
+			fontWeight: theme.typography.fontWeight.regular,
+		},
+		defaultSemiBold: {
+			fontSize: theme.typography.fontSize.default,
+			lineHeight: theme.typography.lineHeight.default,
+			fontWeight: theme.typography.fontWeight.bold,
+		},
+		title: {
+			fontSize: theme.typography.fontSize.title,
+			lineHeight: theme.typography.lineHeight.title,
+			fontWeight: theme.typography.fontWeight.bold,
+		},
+		subtitle: {
+			fontSize: theme.typography.fontSize.small,
+			lineHeight: theme.typography.lineHeight.default,
+			fontWeight: theme.typography.fontWeight.bold,
+		},
+		link: {
+			fontSize: theme.typography.fontSize.default,
+			lineHeight: theme.typography.lineHeight.default,
+			fontWeight: theme.typography.fontWeight.bold,
+			textDecorationLine: "underline",
+		},
+	}[type];
+
+	return <Text {...rest} style={[{ color }, typography, style]} />;
 }
-
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});

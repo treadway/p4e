@@ -1,47 +1,19 @@
-import {
-	Image,
-	StyleSheet,
-	// Platform,
-	ScrollView,
-	View,
-	ImageBackground,
-	Text,
-} from "react-native";
-
+// app/index.tsx
+import React from "react";
+import { ImageBackground, ScrollView, View, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import { InputField } from "@/components/atoms/input-field";
 import { ParticipantHeader } from "@/components/organisms/participant-header";
-
-import * as React from "react";
-// import { LinearGradient } from "react-native-linear-gradient";
 
 export default function HomeScreen() {
 	return (
 		<ThemedView>
-			<ScrollView
-				style={styles.imagePositionbottom}
-				contentContainerStyle={styles.imagePositionbottomContainerContent}
-			>
+			<ScrollView contentContainerStyle={styles.container}>
 				<ImageBackground
-					style={styles.p4ePosition}
-					resizeMode="cover"
+					style={styles.bg}
 					source={require("@/assets/images/content/bottom-background-1.png")}
-				>
-					{/* <LinearGradient
-							style={[styles.gradient, styles.gradientLayout]}
-							locations={[0.09, 0.75]}
-							colors={["rgba(248, 251, 236, 0)", "rgba(248, 251, 236, 0.87)"]}
-							useAngle={true}
-							angle={180}
-						/> */}
-				</ImageBackground>
-				<View style={styles.emptyContent}>
-					{/* <InputField
-						label="Label"
-						placeholder="Write something..."
-						multiline
-					/> */}
-					<ParticipantHeader></ParticipantHeader>
+				/>
+				<View style={styles.inner}>
+					<ParticipantHeader />
 				</View>
 			</ScrollView>
 		</ThemedView>

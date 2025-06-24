@@ -1,10 +1,11 @@
 // app/(tabs)/_layout.tsx
-import { Tabs } from "expo-router";
+import React from "react";
 import { Platform } from "react-native";
-import { useTheme } from "styles/theme-context";
+import { Tabs } from "expo-router";
+import { useTheme } from "styles"; // ← make sure this points at your theme hook
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function TabLayout() {
 	const { theme } = useTheme();
@@ -12,10 +13,10 @@ export default function TabLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarActiveTintColor: theme.colors.success,
 				headerShown: false,
 				tabBarButton: HapticTab,
 				tabBarBackground: TabBarBackground,
+				tabBarActiveTintColor: theme.colors.success, // ← use your theme’s success color
 				tabBarStyle: Platform.select({
 					ios: { position: "absolute" },
 					default: {},
@@ -27,7 +28,7 @@ export default function TabLayout() {
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="house.fill" color={color} />
+						<IconSymbol name="house.fill" color={color} />
 					),
 				}}
 			/>
@@ -36,7 +37,7 @@ export default function TabLayout() {
 				options={{
 					title: "Explore",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
+						<IconSymbol name="paperplane.fill" color={color} />
 					),
 				}}
 			/>

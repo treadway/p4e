@@ -4,8 +4,8 @@
 		"strict": true,
 		"moduleResolution": "node16",
 		"paths": {
-			"@/*": ["./*"],
-			"styles": ["styles/index"]
+			"styles": ["styles/index"],
+			"@/*": ["./*"]
 		}
 	},
 	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

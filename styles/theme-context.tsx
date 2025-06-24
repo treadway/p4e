@@ -1,28 +1,49 @@
-import React, { createContext, useState, useMemo } from "react";
+// styles/theme-context.tsx
+import React, {
+	createContext,
+	useContext,
+	useMemo,
+	useState,
+	useEffect,
+} from "react";
 import { Appearance } from "react-native";
 import { lightTheme, darkTheme, Theme } from "./themes";
 
-export type ThemeMode = "light" | "dark";
+type ThemeMode = "light" | "dark";
 
-export const ThemeContext = createContext<Theme | null>(null);
-export const ThemeModeContext = createContext<{
+interface ThemeContextType {
+	theme: Theme;
 	mode: ThemeMode;
 	setMode: (mode: ThemeMode) => void;
-} | null>(null);
+}
+
+export const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-	const systemScheme = Appearance.getColorScheme() ?? "light";
-	const [mode, setMode] = useState<ThemeMode>(systemScheme);
+	const colorScheme = (Appearance.getColorScheme() as ThemeMode) || "light";
+	const [mode, setMode] = useState<ThemeMode>(colorScheme);
 
-	const theme = useMemo(() => {
-		return mode === "dark" ? darkTheme : lightTheme;
-	}, [mode]);
+	useEffect(() => {
+		const sub = Appearance.addChangeListener(({ colorScheme }) => {
+			if (colorScheme) setMode(colorScheme as ThemeMode);
+		});
+		return () => sub.remove();
+	}, []);
+
+	const theme = useMemo(
+		() => (mode === "dark" ? darkTheme : lightTheme),
+		[mode]
+	);
+	const value = useMemo(() => ({ theme, mode, setMode }), [theme, mode]);
 
 	return (
-		<ThemeContext.Provider value={theme}>
-			<ThemeModeContext.Provider value={{ mode, setMode }}>
-				{children}
-			</ThemeModeContext.Provider>
-		</ThemeContext.Provider>
+		<ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 	);
+};
+
+export const useThemeContext = () => {
+	const ctx = useContext(ThemeContext);
+	if (!ctx)
+		throw new Error("useThemeContext must be used within ThemeProvider");
+	return ctx;
 };

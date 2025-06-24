@@ -1,40 +1,32 @@
 // styles/index.ts
-import { useContext } from "react";
-import { ThemeContext, ThemeProvider } from "./theme-context";
-import { tokens } from "./tokens";
+import { useColorScheme } from "react-native";
+import { lightTheme, darkTheme, Theme } from "./themes";
 
 /**
- * Pull out the `theme` object from ThemeContext
- * — this is now a real hook at the top level.
+ * Picks lightTheme or darkTheme based on OS setting
  */
-export const useTheme = () => {
-	const ctx = useContext(ThemeContext);
-	if (!ctx) {
-		throw new Error("useTheme must be used within ThemeProvider");
-	}
-	return ctx.theme;
-};
+export function useTheme(): Theme {
+	const scheme = useColorScheme();
+	return scheme === "dark" ? darkTheme : lightTheme;
+}
 
 /**
- * A tiny helper: if you pass an object, it’s returned verbatim;
- * if you pass a function, we call it with the theme.
+ * Hook to build styles objects from a factory function
  */
-export function useStyles<T>(
-	input: T | ((theme: ReturnType<typeof useTheme>) => T)
-): { styles: T } {
+export function useStyles<T>(factory: T | ((theme: Theme) => T)): {
+	styles: T;
+} {
 	const theme = useTheme();
-	const styles = typeof input === "function" ? (input as any)(theme) : input;
+	const styles =
+		typeof factory === "function" ? (factory as any)(theme) : factory;
 	return { styles };
 }
 
 /**
- * createStyleSheet simply returns your factory back.
- * Don’t call hooks here.
+ *  For static sheets that only need the *light* theme at build-time.
  */
 export function createStyleSheet<T>(
-	factory: (theme: ReturnType<typeof useTheme>) => T
-): (theme: ReturnType<typeof useTheme>) => T {
-	return factory;
+	fn: (theme: Theme) => T
+): (theme: Theme) => T {
+	return fn;
 }
-
-export { ThemeProvider } from "./theme-context";

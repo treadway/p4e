@@ -1,17 +1,11 @@
 // styles/theme-context.tsx
-import React, {
-	createContext,
-	useContext,
-	useMemo,
-	useState,
-	useEffect,
-} from "react";
+import React, { createContext, useState, useEffect, useMemo } from "react";
 import { Appearance } from "react-native";
-import { lightTheme, darkTheme, Theme } from "./themes";
+import { lightTheme, darkTheme, Theme } from "./themes"; // your token‐derived themes
 
 type ThemeMode = "light" | "dark";
 
-interface ThemeContextType {
+export interface ThemeContextType {
 	theme: Theme;
 	mode: ThemeMode;
 	setMode: (mode: ThemeMode) => void;
@@ -19,9 +13,11 @@ interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType | null>(null);
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-	const colorScheme = (Appearance.getColorScheme() as ThemeMode) || "light";
-	const [mode, setMode] = useState<ThemeMode>(colorScheme);
+export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({
+	children,
+}) => {
+	const initial = (Appearance.getColorScheme() as ThemeMode) || "light";
+	const [mode, setMode] = useState<ThemeMode>(initial);
 
 	useEffect(() => {
 		const sub = Appearance.addChangeListener(({ colorScheme }) => {
@@ -34,16 +30,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 		() => (mode === "dark" ? darkTheme : lightTheme),
 		[mode]
 	);
-	const value = useMemo(() => ({ theme, mode, setMode }), [theme, mode]);
 
 	return (
-		<ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+		<ThemeContext.Provider value={{ theme, mode, setMode }}>
+			{children}
+		</ThemeContext.Provider>
 	);
-};
-
-export const useThemeContext = () => {
-	const ctx = useContext(ThemeContext);
-	if (!ctx)
-		throw new Error("useThemeContext must be used within ThemeProvider");
-	return ctx;
 };

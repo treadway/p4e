@@ -1,30 +1,23 @@
 // styles/index.ts
-import { useColorScheme } from "react-native";
+import { useContext, useColorScheme } from "react-native";
+import { ThemeProvider, useTheme as contextUseTheme } from "./theme-context";
 import { lightTheme, darkTheme, Theme } from "./themes";
 
-/**
- * Picks lightTheme or darkTheme based on OS setting
- */
-export function useTheme(): Theme {
-	const scheme = useColorScheme();
-	return scheme === "dark" ? darkTheme : lightTheme;
-}
+export { ThemeProvider, contextUseTheme as useTheme };
 
 /**
- * Hook to build styles objects from a factory function
+ * Helper to call our real useTheme (from theme-context)
+ * or fall back to OS-level light/dark if you ever need it.
  */
 export function useStyles<T>(factory: T | ((theme: Theme) => T)): {
 	styles: T;
 } {
-	const theme = useTheme();
+	const theme = contextUseTheme();
 	const styles =
 		typeof factory === "function" ? (factory as any)(theme) : factory;
 	return { styles };
 }
 
-/**
- *  For static sheets that only need the *light* theme at build-time.
- */
 export function createStyleSheet<T>(
 	fn: (theme: Theme) => T
 ): (theme: Theme) => T {

@@ -1,17 +1,23 @@
 // styles/theme-context.tsx
-import React, { createContext, useState, useEffect, useMemo } from "react";
+import React, {
+	createContext,
+	useState,
+	useEffect,
+	useMemo,
+	useContext,
+} from "react";
 import { Appearance } from "react-native";
-import { lightTheme, darkTheme, Theme } from "./themes"; // your token‐derived themes
+import { lightTheme, darkTheme, Theme } from "./themes";
 
 type ThemeMode = "light" | "dark";
 
 export interface ThemeContextType {
 	theme: Theme;
 	mode: ThemeMode;
-	setMode: (mode: ThemeMode) => void;
+	setMode: (m: ThemeMode) => void;
 }
 
-export const ThemeContext = createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	children,
@@ -37,3 +43,15 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({
 		</ThemeContext.Provider>
 	);
 };
+
+/**
+ * Our single source-of-truth hook.
+ * Must be called under <ThemeProvider>.
+ */
+export function useTheme(): Theme {
+	const ctx = useContext(ThemeContext);
+	if (!ctx) {
+		throw new Error("useTheme must be used within a ThemeProvider");
+	}
+	return ctx.theme;
+}

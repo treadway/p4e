@@ -186,6 +186,12 @@ const stylesheet = createStyleSheet((theme) => ({
 	pointsCurvedBottomTrueEditTrue: {
 		height: 24,
 	},
+	editButtonWrapper: {
+		position: "absolute",
+		bottom: theme.spacing.md,
+		right: theme.spacing.md,
+		zIndex: 20,
+	},
 
 	// editBadge: {
 	// 	flexDirection: "row",

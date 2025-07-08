@@ -23,6 +23,7 @@ export interface Theme {
 			grayLight: string;
 			gray: string;
 			grayDark: string;
+			page: string;
 		};
 	};
 	typography: {
@@ -46,6 +47,9 @@ export interface Theme {
 		xxl: number;
 		auto: number | string;
 		navBottom: number;
+	};
+	page: {
+		background: string;
 	};
 	button: {
 		size: { default: number; small: number };
@@ -90,6 +94,12 @@ export interface Theme {
 			type?: string;
 		};
 	};
+	badge: {
+		color: string;
+		background: string;
+		stroke: string;
+		size: number;
+	};
 }
 
 export const lightTheme: Theme = {
@@ -106,7 +116,7 @@ export const lightTheme: Theme = {
 		warning: tokens.colors.warning.light,
 		warningDark: tokens.colors.warning.dark,
 		danger: tokens.colors.danger.light,
-		dangerDark: tokens.colors.danger.dark,
+		dangerDark: tokens.spacing.navBottom,
 		info: tokens.colors.info.light,
 		infoDark: tokens.colors.info.dark,
 		disabled: tokens.colors.disabled,
@@ -115,6 +125,7 @@ export const lightTheme: Theme = {
 			grayLight: tokens.colors.black["50"],
 			gray: tokens.colors.black["66"],
 			grayDark: tokens.colors.black["83"],
+			grayDark: tokens.colors.neutral.page,
 		},
 	},
 
@@ -144,6 +155,10 @@ export const lightTheme: Theme = {
 		xxl: tokens.spacing.xxl,
 		auto: tokens.spacing.auto,
 		navBottom: tokens.spacing.navBottom,
+	},
+
+	page: {
+		background: tokens.colors.neutral.page,
 	},
 
 	button: {
@@ -207,6 +222,13 @@ export const lightTheme: Theme = {
 			color: tokens.shadow.textField.color,
 			type: tokens.shadow.textField.type,
 		},
+	},
+
+	badge: {
+		color: tokens.colors.success.dark,
+		background: tokens.colors.neutral.page,
+		stroke: "rgba(255, 255, 255, 0.64)",
+		size: 32,
 	},
 };
 

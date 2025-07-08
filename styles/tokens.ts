@@ -86,6 +86,7 @@ export const tokens = {
 			white: {
 				"100": "#FFFFFF",
 			},
+			page: "#ededed",
 		},
 	},
 	spacing: {

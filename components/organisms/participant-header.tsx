@@ -65,6 +65,7 @@ export function ParticipantHeader({
 							size="Small"
 							state="Active"
 							text="On"
+							label="Get Points"
 							testID="getPointsButton"
 						/>
 					</View>

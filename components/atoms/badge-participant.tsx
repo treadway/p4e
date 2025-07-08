@@ -1,7 +1,7 @@
 import { useStyles, createStyleSheet } from "styles";
 import { View, Text } from "react-native";
 import { Icon } from "components/atoms/icon";
-import CheckSvg from "assets/icons/tree-fill.svg";
+import CheckSvg from "assets/icons/star-fill.svg";
 
 export interface BadgeParticipantProps {
 	/** Used to locate this view in end-to-end tests. */
@@ -12,7 +12,7 @@ export function BadgeParticipant(props: BadgeParticipantProps) {
 	const { styles } = useStyles(stylesheet);
 	const { styles: iconStyles } = useStyles((theme) => ({
 		icon: {
-			color: theme.badge.color,
+			fill: theme.badge.color,
 			stroke: theme.badge.color,
 		},
 	}));
@@ -21,8 +21,8 @@ export function BadgeParticipant(props: BadgeParticipantProps) {
 		<View style={styles.root} testID={props.testID ?? "67:12691"}>
 			<Icon
 				svg={CheckSvg}
-				size={16}
-				color={iconStyles.icon.color}
+				size={32}
+				fill={iconStyles.icon.fill}
 				stroke={iconStyles.icon.stroke}
 			/>
 			<Text style={styles.labelText} testID="67:12698">
@@ -34,24 +34,30 @@ export function BadgeParticipant(props: BadgeParticipantProps) {
 
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
-		width: 32,
-		height: 32,
+		width: theme.badge.size,
+		height: theme.badge.size,
 		aspectRatio: 1,
-		borderRadius: 32,
+		borderRadius: theme.badge.size,
 		borderWidth: 2,
 		borderStyle: "solid",
-		borderColor: theme.colors.neutral.white["100"],
-		backgroundColor: "rgba(255, 255, 255, 0.64)",
+		borderColor: theme.badge.background,
+		backgroundColor: theme.badge.stroke,
 		justifyContent: "center",
 		alignItems: "center",
+		overflow: "visible",
 	},
 
 	labelText: {
-		color: theme.colors.white,
+		color: theme.colors.neutral.white,
 		textAlign: "center",
 		fontFamily: theme.typography.fontFamily,
 		fontSize: theme.typography.fontSize.md,
 		fontWeight: theme.typography.fontWeight.bold,
 		lineHeight: 26,
+		position: "absolute",
+	},
+	icon: {
+		fill: theme.badge.color,
+		stroke: theme.badge.color,
 	},
 }));

@@ -1,12 +1,12 @@
 // components/atoms/Button.tsx
-import React, { ReactNode } from "react";
+import React, { ReactNode, cloneElement } from "react";
 import {
 	Pressable,
 	Text,
 	View,
 	PressableStateCallbackType,
 } from "react-native";
-import { useStyles, createStyleSheet } from "styles";
+import { useTheme, useStyles, createStyleSheet } from "styles";
 import { useVariants } from "@/utils/useVariants";
 
 export interface ButtonProps {
@@ -22,12 +22,12 @@ export interface ButtonProps {
 }
 
 export const ButtonVariants = {
-	background: ["On", "Off"],
-	icon: ["Off", "Left", "Right", "Only"],
-	size: ["Default", "Small"],
-	state: ["Active", "Disabled"],
-	text: ["On", "Off"],
-} as const;
+	background: ["On", "Off"] as const,
+	icon: ["Off", "Left", "Right", "Only"] as const,
+	size: ["Default", "Small"] as const,
+	state: ["Active", "Disabled"] as const,
+	text: ["On", "Off"] as const,
+};
 
 export function Button({
 	background,
@@ -35,13 +35,13 @@ export function Button({
 	size,
 	state,
 	text,
-	label,
+	label = "Button",
 	iconNode,
 	onPress,
 	testID,
 }: ButtonProps) {
+	const theme = useTheme();
 	const { styles } = useStyles(stylesheet);
-	// sets up all your variant‐based overrides
 	const { vstyles } = useVariants(
 		ButtonVariants,
 		{ background, icon, size, state, text },
@@ -50,141 +50,191 @@ export function Button({
 
 	const isDisabled = state === "Disabled";
 
+	// compute colours from theme
+	const bgColor = isDisabled
+		? theme.button.background.disabled
+		: background === "On"
+		? theme.button.background.on
+		: theme.button.background.off;
+
+	const contentColor = isDisabled
+		? theme.colors.disabled
+		: background === "On"
+		? theme.button.text.on
+		: theme.button.text.off;
+
+	const borderColor =
+		background === "On"
+			? "transparent"
+			: isDisabled
+			? theme.colors.disabled
+			: theme.button.background.on;
+
 	return (
 		<Pressable
 			onPress={onPress}
 			disabled={isDisabled}
+			testID={testID}
 			style={(pressed: PressableStateCallbackType) => [
+				styles.root,
 				...vstyles.root(pressed),
+				{ backgroundColor: bgColor, borderColor },
 				pressed && !isDisabled && styles.pressed,
 			]}
-			testID={testID}
 		>
 			<View style={styles.content}>
-				{(icon === "Left" || icon === "Only") && iconNode}
+				{(icon === "Left" || icon === "Only") &&
+					iconNode &&
+					cloneElement(iconNode as React.ReactElement, { color: contentColor })}
 				{text === "On" && icon !== "Only" && (
-					<Text style={vstyles.text()}>{label ?? "Button"}</Text>
+					<Text style={[...vstyles.text(), { color: contentColor }]}>
+						{label}
+					</Text>
 				)}
-				{icon === "Right" && iconNode}
+				{icon === "Right" &&
+					iconNode &&
+					cloneElement(iconNode as React.ReactElement, { color: contentColor })}
 			</View>
 		</Pressable>
 	);
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-	// base button
+	// ─── BASE ────────────────────────────────────────────────────────────────
 	root: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: theme.button.radii,
-		borderWidth: theme.button.border.width,
-		borderColor: theme.button.border.color,
-		backgroundColor: theme.button.background.default,
+		height: theme.button.size.default,
 		paddingHorizontal: theme.button.padding.horz,
 		paddingVertical: theme.button.padding.vert,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: theme.button.radii,
+		borderWidth: theme.button.border.width,
+		borderStyle: theme.button.border.style,
 		shadowColor: theme.button.shadow.color,
 		shadowOffset: {
 			width: theme.button.shadow.x,
 			height: theme.button.shadow.y,
 		},
 		shadowRadius: theme.button.shadow.blur,
-		shadowOpacity: theme.button.shadow.opacity,
+		shadowOpacity: theme.button.shadow.opacity ?? 1,
 	},
-
-	// simple pressed feedback
 	pressed: {
 		opacity: 0.8,
 	},
-
 	content: {
 		flexDirection: "row",
 		alignItems: "center",
 		gap: theme.spacing.xs,
 	},
-
 	text: {
 		fontFamily: theme.typography.fontFamily,
 		fontSize: theme.typography.fontSize.sm,
 		fontWeight: theme.typography.fontWeight.bold,
-		color: theme.button.text.default,
+		// colour comes via render prop
 	},
 
-	// ─── VARIANT OVERRIDES ────────────────────────────────────────────────────────
-
-	// icon-only, small, background=Off, state=Active
+	// ─── “Icon-Only” OVERRIDES ─────────────────────────────────────────────
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateActive: {
+		width: theme.button.size.default,
+		height: theme.button.size.default,
+		paddingHorizontal: 0,
+		paddingVertical: 0,
+		borderRadius: theme.button.size.default,
+	},
 	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
 		width: theme.button.size.small,
 		height: theme.button.size.small,
 		paddingHorizontal: 0,
-		backgroundColor: theme.button.background.off,
-		borderColor: theme.button.border.color,
+		paddingVertical: 0,
+		borderRadius: theme.button.size.small,
+	},
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateDisabled: {
+		width: theme.button.size.default,
+		height: theme.button.size.default,
+		paddingHorizontal: 0,
+		paddingVertical: 0,
+		borderRadius: theme.button.size.default,
+	},
+	rootTextOffIconOnlySizeSmallBackgroundOffStateDisabled: {
+		width: theme.button.size.small,
+		height: theme.button.size.small,
+		paddingHorizontal: 0,
+		paddingVertical: 0,
+		borderRadius: theme.button.size.small,
 	},
 
-	// you can fold the similar small-height overrides into one if you like,
-	// but here’s each variant explicitly:
-
+	// ─── “Small” SIZE OVERRIDES (text+icon) ────────────────────────────────
+	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
+		height: 82,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
+	},
 	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
 		height: theme.button.size.small,
-		paddingHorizontal: 0,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
+	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
 		height: theme.button.size.small,
-		paddingHorizontal: 0,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
+	rootTextOnIconOffSizeSmallBackgroundOffStateDisabled: {
 		height: theme.button.size.small,
-		paddingHorizontal: 0,
-	},
-
-	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
 	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
 		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
 	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
 		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horz,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-
-	rootTextOnIconOffSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
+	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-	rootTextOnIconLeftSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
+	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-	rootTextOnIconRightSizeDefaultBackgroundOffStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: 0,
+	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-
-	rootTextOnIconLeftSizeDefaultBackgroundOnStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
+	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-	rootTextOnIconRightSizeDefaultBackgroundOnStateActive: {
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
+	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabled: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
-
-	// text-size overrides (for small vs default)
-	textTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.xs,
-	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.xs,
-	},
-	textTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.xs,
-	},
-
-	textTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		fontSize: theme.typography.fontSize.xs,
-		color: theme.button.text.off,
+	rootTextOnIconRightSizeSmallBackgroundOffStateDisabled: {
+		height: theme.button.size.small,
+		paddingVertical: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
 	},
 }));

@@ -103,9 +103,9 @@ export const tokens = {
 	},
 	padding: {
 		formHorizontalDefault: 16,
-		formHorizontalSmall: 8,
 		formVertical: 8,
-		formVerticalSmall: 0,
+		formHorizontalSmall: 8,
+		formVerticalIcon: 0,
 	},
 	borderRadius: {
 		default: 16,

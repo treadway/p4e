@@ -53,7 +53,7 @@ export interface Theme {
 	};
 	button: {
 		size: { default: number; small: number };
-		padding: { horz: number; vert: number };
+		padding: { horz: number; vert: number; horzIcon: number; horzSm: number };
 		radii: number;
 		border: { width: number; style: string; color: string };
 		shadow: {
@@ -63,7 +63,7 @@ export interface Theme {
 			spread: number;
 			color: string;
 		};
-		background: { on: string; off: string };
+		background: { on: string; off: string; disabled: string };
 		text: { on: string; off: string };
 	};
 	card: {
@@ -169,6 +169,8 @@ export const lightTheme: Theme = {
 		padding: {
 			horz: tokens.padding.formHorizontalDefault,
 			vert: tokens.padding.formVertical,
+			horzIcon: tokens.padding.formVerticalIcon,
+			horzSm: tokens.padding.formHorizontalSmall,
 		},
 		radii: tokens.borderRadius.default,
 		border: {
@@ -186,6 +188,7 @@ export const lightTheme: Theme = {
 		background: {
 			on: tokens.colors.success.light,
 			off: tokens.colors.white,
+			disabled: tokens.colors.disabled,
 		},
 		text: {
 			on: tokens.colors.white,

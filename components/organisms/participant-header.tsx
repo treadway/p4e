@@ -8,6 +8,7 @@ import { Button } from "components/atoms/button";
 import { DataDisplay } from "components/atoms/data-display";
 import { ParticipantImage } from "components/atoms/participant-image";
 import EditIcon from "@/assets/icons/pencil-fill.svg";
+import PlusIcon from "@/assets/icons/plus-circle.svg";
 import { Icon } from "components/atoms/icon";
 
 export interface ParticipantHeaderProps {
@@ -66,6 +67,7 @@ export function ParticipantHeader({
 							state="Active"
 							text="On"
 							label="Get Points"
+							iconNode={<Icon svg={PlusIcon} size={14} />}
 							testID="getPointsButton"
 						/>
 					</View>

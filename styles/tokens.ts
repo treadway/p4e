@@ -16,6 +16,7 @@ export const tokens = {
 	},
 	fontWeights: {
 		bold: "bold",
+		regular: "regular",
 	},
 	colors: {
 		green: {
@@ -104,6 +105,7 @@ export const tokens = {
 		formHorizontalDefault: 16,
 		formHorizontalSmall: 8,
 		formVertical: 8,
+		formVerticalSmall: 0,
 	},
 	borderRadius: {
 		default: 16,

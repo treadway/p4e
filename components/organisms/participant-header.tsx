@@ -67,7 +67,7 @@ export function ParticipantHeader({
 							state="Active"
 							text="On"
 							label="Get Points"
-							iconNode={<Icon svg={PlusIcon} size={14} />}
+							iconNode={<Icon svg={PlusIcon} size={14} stroke={1} />}
 							testID="getPointsButton"
 						/>
 					</View>

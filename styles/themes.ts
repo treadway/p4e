@@ -184,6 +184,11 @@ export const lightTheme: Theme = {
 			blur: tokens.shadow.button.blur,
 			spread: tokens.shadow.button.spread,
 			color: tokens.shadow.button.color,
+			pressed: {
+				x: 0,
+				y: 0,
+				blur: 0,
+			},
 		},
 		background: {
 			on: tokens.colors.success.light,

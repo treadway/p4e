@@ -22,12 +22,12 @@ export interface ButtonProps {
 }
 
 export const ButtonVariants = {
-	background: ["On", "Off"] as const,
-	icon: ["Off", "Left", "Right", "Only"] as const,
-	size: ["Default", "Small"] as const,
-	state: ["Active", "Disabled"] as const,
-	text: ["On", "Off"] as const,
-};
+	background: ["On", "Off"],
+	icon: ["Off", "Left", "Right", "Only"],
+	size: ["Default", "Small"],
+	state: ["Active", "Disabled"],
+	text: ["On", "Off"],
+} as const;
 
 export function Button({
 	background,
@@ -50,7 +50,7 @@ export function Button({
 
 	const isDisabled = state === "Disabled";
 
-	// compute colours from theme
+	// ① compute colors from theme + on/off/disabled
 	const bgColor = isDisabled
 		? theme.button.background.disabled
 		: background === "On"
@@ -70,44 +70,69 @@ export function Button({
 			? theme.colors.disabled
 			: theme.button.background.on;
 
+	// ② build the full N-axis variant key
+	const fullRootKey = `rootText${text}Icon${icon}Size${size}Background${background}State${state}`;
+	const fullOverride = (styles as any)[fullRootKey] || {};
+
+	const fullTextKey = fullRootKey.replace(/^root/, "text");
+	const fullTextOverride = (styles as any)[fullTextKey] || {};
+
 	return (
 		<Pressable
 			onPress={onPress}
 			disabled={isDisabled}
 			testID={testID}
-			style={(pressed: PressableStateCallbackType) => [
-				styles.root,
-				...vstyles.root(pressed),
+			style={(state: PressableStateCallbackType) => [
+				// base
+				vstyles.root(state),
+				// your full override (width/height/padding tweaks)
+				fullOverride,
+				// then apply dynamic colors
 				{ backgroundColor: bgColor, borderColor },
-				pressed && !isDisabled && styles.pressed,
+				// pressed feedback
+				state.pressed && !isDisabled && styles.pressed,
 			]}
 		>
-			<View style={styles.content}>
+			<View style={vstyles.content()}>
+				{/* left icon */}
 				{(icon === "Left" || icon === "Only") &&
 					iconNode &&
-					cloneElement(iconNode as React.ReactElement, { color: contentColor })}
+					cloneElement(iconNode as React.ReactElement, {
+						color: contentColor,
+					})}
+				{/* label */}
 				{text === "On" && icon !== "Only" && (
-					<Text style={[...vstyles.text(), { color: contentColor }]}>
+					<Text
+						style={[
+							...vstyles.text(),
+							fullTextOverride,
+							{ color: contentColor },
+						]}
+					>
 						{label}
 					</Text>
 				)}
+				{/* right icon */}
 				{icon === "Right" &&
 					iconNode &&
-					cloneElement(iconNode as React.ReactElement, { color: contentColor })}
+					cloneElement(iconNode as React.ReactElement, {
+						color: contentColor,
+						userSelect: "none",
+					})}
 			</View>
 		</Pressable>
 	);
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-	// ─── BASE ────────────────────────────────────────────────────────────────
+	// ─── BASE ─────────────────────────────────────────────────────
 	root: {
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
-		paddingVertical: theme.button.padding.vert,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
+		height: theme.button.size.default,
+		paddingHorizontal: theme.button.padding.horz,
+		paddingVertical: theme.button.padding.vert,
 		borderRadius: theme.button.radii,
 		borderWidth: theme.button.border.width,
 		borderStyle: theme.button.border.style,
@@ -119,22 +144,25 @@ const stylesheet = createStyleSheet((theme) => ({
 		shadowRadius: theme.button.shadow.blur,
 		shadowOpacity: theme.button.shadow.opacity ?? 1,
 	},
+
 	pressed: {
-		opacity: 0.8,
+		shadowOffset: {
+			width: theme.button.shadow.pressed.x,
+			height: theme.button.shadow.pressed.y,
+		},
+		shadowRadius: theme.button.shadow.pressed.blur,
 	},
+
 	content: {
 		flexDirection: "row",
 		alignItems: "center",
 		gap: theme.spacing.xs,
 	},
+
 	text: {
 		fontFamily: theme.typography.fontFamily,
 		fontSize: theme.typography.fontSize.sm,
 		fontWeight: theme.typography.fontWeight.bold,
-		small: {
-			fontSize: theme.typography.fontSize.xs,
-			fontWeight: theme.typography.fontWeight.regular,
-		},
 	},
 
 	// ─── “Icon-Only” OVERRIDES ─────────────────────────────────────────────
@@ -166,63 +194,53 @@ const stylesheet = createStyleSheet((theme) => ({
 	// ─── “Small” SIZE OVERRIDES (text+icon) ────────────────────────────────
 	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
-		fontSize: 12,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconOffSizeSmallBackgroundOffStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
+		fontSize: theme.typography.fontSize.xs,
 	},
 	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 	rootTextOnIconRightSizeSmallBackgroundOffStateDisabled: {
 		height: theme.button.size.small,
-		paddingLeft: 0,
-		paddingRight: 0,
+		paddingHorizontal: theme.button.padding.horzSm,
 	},
 }));

@@ -22,9 +22,7 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider>
-			<Slot />{" "}
-			{/* ← now every screen (including your tab layout) can use useTheme() */}
-			<StatusBar style="auto" />
+			<Slot /> <StatusBar style="auto" />
 		</ThemeProvider>
 	);
 }

@@ -70,7 +70,7 @@ export function Button({
 			? theme.colors.disabled
 			: theme.button.background.on;
 
-	// ② build the full N-axis variant key
+	// build the full N-axis variant key
 	const fullRootKey = `rootText${text}Icon${icon}Size${size}Background${background}State${state}`;
 	const fullOverride = (styles as any)[fullRootKey] || {};
 
@@ -83,13 +83,9 @@ export function Button({
 			disabled={isDisabled}
 			testID={testID}
 			style={(state: PressableStateCallbackType) => [
-				// base
 				vstyles.root(state),
-				// your full override (width/height/padding tweaks)
 				fullOverride,
-				// then apply dynamic colors
 				{ backgroundColor: bgColor, borderColor },
-				// pressed feedback
 				state.pressed && !isDisabled && styles.pressed,
 			]}
 		>

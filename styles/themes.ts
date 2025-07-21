@@ -32,9 +32,10 @@ export interface Theme {
 		fontSize: {
 			xs: number;
 			sm: number;
-			md: number;
+			base: number;
 			lg: number;
 			xl: number;
+			xxl: number;
 		};
 		letterSpacing: { default: number };
 	};
@@ -116,7 +117,7 @@ export const lightTheme: Theme = {
 		warning: tokens.colors.warning.light,
 		warningDark: tokens.colors.warning.dark,
 		danger: tokens.colors.danger.light,
-		dangerDark: tokens.spacing.navBottom,
+		dangerDark: tokens.colors.danger.dark,
 		info: tokens.colors.info.light,
 		infoDark: tokens.colors.info.dark,
 		disabled: tokens.colors.disabled,
@@ -125,7 +126,7 @@ export const lightTheme: Theme = {
 			grayLight: tokens.colors.black["50"],
 			gray: tokens.colors.black["66"],
 			grayDark: tokens.colors.black["83"],
-			grayDark: tokens.colors.neutral.page,
+			page: tokens.colors.neutral.page,
 		},
 	},
 
@@ -138,10 +139,11 @@ export const lightTheme: Theme = {
 		},
 		fontSize: {
 			xs: tokens.fontSizes.xs,
-			sm: tokens.fontSizes.base,
-			md: tokens.fontSizes.lg,
-			lg: tokens.fontSizes.xl,
-			xl: tokens.fontSizes.xl * 1.25,
+			sm: tokens.fontSizes.sm,
+			base: tokens.fontSizes.base,
+			lg: tokens.fontSizes.lg,
+			xl: tokens.fontSizes.xl,
+			xxl: tokens.fontSizes.xl * 1.25,
 		},
 		letterSpacing: { default: 0.28 },
 	},

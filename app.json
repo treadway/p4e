@@ -12,7 +12,9 @@
 			"supportsTablet": true,
 			"bundleIdentifier": "com.re-fresh.points4earth",
 			"infoPlist": {
-				"ITSAppUsesNonExemptEncryption": false
+				"ITSAppUsesNonExemptEncryption": false,
+				"NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to location for trip tracking.",
+				"NSLocationWhenInUseUsageDescription": "This app uses location to track your eco-friendly trips and calculate points."
 			}
 		},
 		"android": {
@@ -35,6 +37,13 @@
 					"imageWidth": 200,
 					"resizeMode": "contain",
 					"backgroundColor": "#ffffff"
+				}
+			],
+			[
+				"expo-location",
+				{
+					"locationAlwaysAndWhenInUsePermission": "This app needs access to location for trip tracking.",
+					"locationWhenInUsePermission": "This app uses location to track your eco-friendly trips and calculate points."
 				}
 			]
 		],

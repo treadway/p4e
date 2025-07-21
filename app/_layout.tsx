@@ -5,7 +5,8 @@ import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { ThemeProvider } from "styles";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,6 +14,8 @@ export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
 		WorkSans: require("../assets/fonts/WorkSans-Regular.ttf"),
 		Satoshi: require("../assets/fonts/Satoshi-Regular.ttf"),
+		"WorkSans-Bold": require("../assets/fonts/WorkSans-Bold.ttf"),
+		"Satoshi-Bold": require("../assets/fonts/Satoshi-Bold.ttf"),
 	});
 
 	useEffect(() => {

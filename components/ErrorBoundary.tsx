@@ -60,15 +60,3 @@ const styles = StyleSheet.create({
 		color: "#666",
 	},
 });
-
-// app/_layout.tsx usage:
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-
-return (
-	<ErrorBoundary>
-		<ThemeProvider>
-			<Slot />
-			<StatusBar style="auto" />
-		</ThemeProvider>
-	</ErrorBoundary>
-);

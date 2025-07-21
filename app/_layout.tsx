@@ -25,9 +25,10 @@ export default function RootLayout() {
 	if (!fontsLoaded) return null;
 
 	return (
-		<ErrorBoundary fallback={<ErrorFallback />}>
+		<ErrorBoundary>
 			<ThemeProvider>
-				<Slot /> <StatusBar style="auto" />
+				<Slot />
+				<StatusBar style="auto" />
 			</ThemeProvider>
 		</ErrorBoundary>
 	);

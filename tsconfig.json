@@ -5,7 +5,8 @@
 		"moduleResolution": "node16",
 		"paths": {
 			"styles": ["styles/index"],
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"react-native-maps": ["node_modules/react-native-maps"]
 		}
 	},
 	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

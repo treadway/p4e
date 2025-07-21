@@ -1,12 +1,11 @@
 // app/index.tsx
 import React from "react";
 import { ImageBackground, ScrollView, View, StyleSheet } from "react-native";
-import { ThemedView } from "@/components/ThemedView";
 import { ParticipantHeader } from "@/components/organisms/participant-header";
 
 export default function HomeScreen() {
 	return (
-		<ThemedView>
+		<View>
 			<ScrollView contentContainerStyle={styles.container}>
 				<ImageBackground
 					style={styles.bg}
@@ -16,7 +15,7 @@ export default function HomeScreen() {
 					<ParticipantHeader />
 				</View>
 			</ScrollView>
-		</ThemedView>
+		</View>
 	);
 }
 

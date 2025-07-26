@@ -13,6 +13,11 @@ export interface ScreenGetPointsCardModalProps {
 export function ScreenGetPointsCardModal(props: ScreenGetPointsCardModalProps) {
 	const { styles } = useStyles(stylesheet);
 
+	// Add to your home screen:
+	const theme = useTheme();
+	console.log("Current theme mode:", theme === lightTheme ? "light" : "dark");
+	// const [mode, setMode] = useState<ThemeMode>("light");
+
 	return (
 		<View style={styles.root} testID={props.testID ?? "513:66426"}>
 			<BaseView testID="297:18494" imagePosition="top" />

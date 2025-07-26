@@ -68,6 +68,7 @@ export interface Theme {
 		text: { on: string; off: string };
 	};
 	card: {
+		borderRadius: number;
 		shadow: {
 			x: number;
 			y: number;
@@ -102,6 +103,12 @@ export interface Theme {
 		size: number;
 	};
 }
+
+//
+// ————————————————————————————————————————————————————
+//
+// ————— LIGHT THEME ———————————————————————————————————————
+//
 
 export const lightTheme: Theme = {
 	participantHeader: {
@@ -204,6 +211,7 @@ export const lightTheme: Theme = {
 	},
 
 	card: {
+		borderRadius: tokens.borderRadius.default,
 		shadow: {
 			x: tokens.shadow.card.x,
 			y: tokens.shadow.card.y,
@@ -241,6 +249,12 @@ export const lightTheme: Theme = {
 		size: 32,
 	},
 };
+
+//
+// ————————————————————————————————————————————————————
+//
+// ————— DARK THEME ———————————————————————————————————————
+//
 
 export const darkTheme: Theme = {
 	...lightTheme,

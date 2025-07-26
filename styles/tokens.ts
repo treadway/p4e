@@ -211,6 +211,12 @@ export type {
 	Typography,
 };
 
+//
+// ————————————————————————————————————————————————————
+//
+// ————— TOKENS ———————————————————————————————————————
+//
+
 export const tokens: TokenSystem = {
 	fontSizes: {
 		xs: 12,

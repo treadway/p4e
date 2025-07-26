@@ -1,4 +1,4 @@
-// components/organisms/ParticipantHeader.tsx
+// components/organisms/ParticipantHeader.tsx - Using Figma styles + theme
 import React from "react";
 import { View, Text } from "react-native";
 import { useStyles, createStyleSheet } from "styles";
@@ -105,9 +105,10 @@ export function ParticipantHeader({
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+	// ─── FIGMA BASE STYLES (THEMED) ──────────────────────────────
 	root: {
-		width: theme.participantHeader.width,
-		paddingTop: theme.spacing.xl,
+		width: theme.participantHeader.width, // Use theme value
+		paddingTop: theme.spacing.xxl, // 32 → theme value
 		flexDirection: "column",
 		alignItems: "center",
 	},
@@ -119,11 +120,12 @@ const stylesheet = createStyleSheet((theme) => ({
 
 	participant: {
 		flexDirection: "row",
-		width: theme.participantHeader.participantImage.size,
+		width: theme.participantHeader.participantImage.size, // 128 → theme value
 		justifyContent: "center",
 		alignItems: "center",
-		shadowColor: theme.card.shadow.color,
+		shadowColor: theme.card.shadow.color, // Themed shadow
 		shadowRadius: theme.card.shadow.blur,
+		zIndex: 2,
 		shadowOffset: {
 			width: theme.card.shadow.x,
 			height: theme.card.shadow.y,
@@ -131,10 +133,10 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	imageAndBadge: {
-		width: theme.participantHeader.participantImage.size,
+		width: theme.participantHeader.participantImage.size, // 128 → theme value
 		height: theme.participantHeader.participantImage.size,
 		position: "absolute",
-		top: -theme.participantHeader.participantImage.size / 2,
+		top: -theme.participantHeader.participantImage.size / 2, // -64 → calculated
 		zIndex: 10,
 		alignItems: "center",
 		justifyContent: "center",
@@ -144,22 +146,21 @@ const stylesheet = createStyleSheet((theme) => ({
 		position: "absolute",
 		bottom: 0,
 		right: 0,
-		width: theme.button.size.small,
-		height: theme.button.size.small,
+		width: theme.badge.size, // 32 → theme value
+		height: theme.badge.size,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 
 	participantInfo: {
-		paddingHorizontal: theme.spacing.md,
+		paddingHorizontal: theme.spacing.md, // 12 → theme value
 		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "center",
 		alignSelf: "stretch",
-		borderTopLeftRadius: theme.button.radii,
-		borderTopRightRadius: theme.button.radii,
-		backgroundColor: theme.colors.background,
-		shadowColor: theme.card.shadow.color,
+		borderTopLeftRadius: theme.card.borderRadius, // 16 → theme value
+		borderTopRightRadius: theme.card.borderRadius,
+		backgroundColor: theme.colors.background.default, // Themed background
+		shadowColor: theme.card.shadow.color, // Themed shadow
 		shadowRadius: theme.card.shadow.blur,
 		shadowOffset: {
 			width: theme.card.shadow.x,
@@ -171,15 +172,14 @@ const stylesheet = createStyleSheet((theme) => ({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		justifyContent: "center",
 		alignSelf: "stretch",
-		height: 48,
+		height: 48, // Keep Figma value
 	},
 
 	points: {
 		flexDirection: "column",
 		alignItems: "flex-start",
-		rowGap: theme.spacing.sm,
+		rowGap: theme.spacing.sm, // 8 → theme value
 		columnGap: theme.spacing.sm,
 		flexGrow: 1,
 		flexShrink: 0,
@@ -189,27 +189,11 @@ const stylesheet = createStyleSheet((theme) => ({
 	pointsCurvedBottomTrueEditTrue: {
 		height: 24,
 	},
-	editButtonWrapper: {
-		position: "absolute",
-		bottom: theme.spacing.md,
-		right: theme.spacing.md,
-		zIndex: 20,
-	},
-
-	// editBadge: {
-	// 	flexDirection: "row",
-	// 	width: 112,
-	// 	height: 32,
-	// 	paddingLeft: 80,
-	// 	justifyContent: "flex-end",
-	// 	alignItems: "center",
-	// 	flexShrink: 0,
-	// },
 
 	getPoints: {
 		flexDirection: "column",
 		alignItems: "flex-end",
-		rowGap: theme.spacing.sm,
+		rowGap: theme.spacing.sm, // 8 → theme value
 		columnGap: theme.spacing.sm,
 		flexGrow: 1,
 		flexShrink: 0,
@@ -222,58 +206,58 @@ const stylesheet = createStyleSheet((theme) => ({
 
 	gusSlomecki: {
 		alignSelf: "stretch",
-		color: theme.colors.text.default,
+		color: theme.colors.text.default, // Themed text color
 		textAlign: "center",
-		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize.default,
-		fontWeight: theme.typography.fontWeight.bold,
+		fontFamily: theme.typography.fontFamily, // Themed font
+		fontSize: theme.typography.fontSize.base, // 16 → theme value
+		fontWeight: theme.typography.fontWeight.bold, // 700 → theme value
 	},
 
 	earthHero: {
-		color: theme.colors.success.default,
+		color: theme.colors.successDark, // Themed success color
 		textAlign: "center",
-		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize.sm,
-		fontWeight: theme.typography.fontWeight.semibold,
-		letterSpacing: theme.typography.letterSpacing.default,
+		fontFamily: theme.typography.fontFamily, // Themed font
+		fontSize: theme.typography.fontSize.sm, // 14 → theme value
+		fontWeight: theme.typography.fontWeight.regular, // 600 → closest theme value
+		letterSpacing: theme.typography.letterSpacing.default, // 0.28 → theme value
 	},
 
 	participantName: {
-		paddingTop: theme.spacing.sm,
-		paddingBottom: theme.spacing.lg,
+		paddingTop: theme.spacing.sm, // 8 → theme value
+		paddingBottom: theme.spacing.lg, // 16 → theme value
 		flexDirection: "column",
 		alignItems: "center",
 		alignSelf: "stretch",
 	},
 
 	participantNameCurvedBottomTrueEditTrue: {
-		rowGap: theme.spacing.xl,
+		rowGap: theme.spacing.xl, // 24 → theme value
 		columnGap: theme.spacing.xl,
 	},
 
 	bottomCircle: {
 		flexDirection: "row",
-		width: 278,
+		width: 278, // Keep Figma value for now
 		height: 32,
 		justifyContent: "center",
 		alignItems: "flex-start",
-		rowGap: theme.spacing.sm,
+		rowGap: theme.spacing.sm, // 8 → theme value
 		columnGap: theme.spacing.sm,
 		position: "absolute",
 		left: 41,
-		bottom: -8,
+		bottom: -32, // Use Figma value
 		overflow: "hidden",
 	},
 
 	bottomCircleCurvedBottomTrueEditFalse: {
-		paddingBottom: theme.spacing.md,
+		paddingBottom: theme.spacing.sm, // 8 → theme value
 		justifyContent: "space-between",
 		alignItems: "flex-end",
 		alignSelf: "stretch",
 	},
 
 	bottomCircleCurvedBottomTrueEditTrue: {
-		paddingBottom: theme.spacing.md,
+		paddingBottom: theme.spacing.sm, // 8 → theme value
 		justifyContent: "space-between",
 		alignItems: "flex-end",
 		flexShrink: 0,
@@ -281,14 +265,14 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	bottomCircle2: {
-		width: 278,
+		width: 278, // Keep Figma value for now
 		height: 278,
 		aspectRatio: 1,
 		position: "absolute",
-		top: -255,
-		borderRadius: 278,
-		backgroundColor: theme.colors.background,
-		shadowColor: theme.card.shadow.color,
+		top: -255, // Keep Figma calculation
+		borderRadius: 278, // Keep as circle
+		backgroundColor: theme.colors.background.default, // Themed background
+		shadowColor: theme.card.shadow.color, // Themed shadow
 		shadowRadius: theme.card.shadow.blur,
 		shadowOffset: {
 			width: theme.card.shadow.x,
@@ -297,7 +281,7 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	bottomCircle2CurvedBottomTrueEditFalse: {
-		padding: theme.spacing.sm,
+		padding: theme.spacing.sm, // 8 → theme value
 		flexDirection: "column",
 		justifyContent: "flex-end",
 		alignItems: "center",
@@ -306,11 +290,18 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	bottomCircle2CurvedBottomTrueEditTrue: {
-		padding: theme.spacing.sm,
+		padding: theme.spacing.sm, // 8 → theme value
 		flexDirection: "column",
 		justifyContent: "flex-end",
 		alignItems: "center",
 		rowGap: theme.spacing.sm,
 		columnGap: theme.spacing.sm,
+	},
+
+	editButtonWrapper: {
+		position: "absolute",
+		bottom: theme.spacing.md, // Position from theme
+		right: theme.spacing.md,
+		zIndex: 20,
 	},
 }));

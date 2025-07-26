@@ -21,8 +21,12 @@ export function BaseView(props: BaseViewProps) {
 	const { vstyles } = useVariants(BaseViewVariants, { imagePosition }, styles);
 
 	return (
-		<View style={vstyles.root()} testID={props.testID ?? "29:6703"}>
-			<P4EBackground testID="33:5266" />
+		<View
+			testID={props.testID ?? "29:6703"}
+			style={[vstyles.root(), props.style]}
+		>
+			<P4EBottomBackground testID="33:5266" />
+			<EmptyContent testID="33:2052" style={vstyles.emptyContent()} />
 		</View>
 	);
 }
@@ -34,5 +38,14 @@ const stylesheet = createStyleSheet((theme) => ({
 		flexDirection: "column",
 		alignItems: "center",
 		backgroundColor: "rgba(255, 255, 255, 1)",
+	},
+	emptyContent: {
+		height: 780,
+		alignSelf: "stretch",
+	},
+	emptyContentImagePositionTop: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
 	},
 }));

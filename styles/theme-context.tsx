@@ -23,7 +23,8 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	children,
 }) => {
 	const initial = (Appearance.getColorScheme() as ThemeMode) || "light";
-	const [mode, setMode] = useState<ThemeMode>(initial);
+	// const [mode, setMode] = useState<ThemeMode>(initial);
+	const [mode, setMode] = useState<ThemeMode>("light");
 
 	useEffect(() => {
 		const sub = Appearance.addChangeListener(({ colorScheme }) => {

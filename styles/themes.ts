@@ -50,6 +50,7 @@ export interface Theme {
 		navBottom: number;
 	};
 	page: {
+		width: number;
 		background: string;
 	};
 	button: {
@@ -167,6 +168,7 @@ export const lightTheme: Theme = {
 	},
 
 	page: {
+		width: tokens.sizing.base,
 		background: tokens.colors.neutral.page,
 	},
 

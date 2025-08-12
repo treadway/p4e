@@ -26,18 +26,18 @@ export function BaseView(props: BaseViewProps) {
 			style={[vstyles.root(), props.style]}
 		>
 			<P4EBottomBackground testID="33:5266" />
-			<EmptyContent testID="33:2052" style={vstyles.emptyContent()} />
+			// <EmptyContent testID="33:2052" style={vstyles.emptyContent()} />
 		</View>
 	);
 }
 
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
-		width: 360,
-		minHeight: 640,
+		width: theme.page.width,
+		// minHeight: 640,
 		flexDirection: "column",
 		alignItems: "center",
-		backgroundColor: "rgba(255, 255, 255, 1)",
+		// backgroundColor: "rgba(255, 255, 255, 1)",
 	},
 	emptyContent: {
 		height: 780,

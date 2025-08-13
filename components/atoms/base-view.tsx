@@ -22,8 +22,7 @@ export function BaseView(props: BaseViewProps) {
 
 	return (
 		<View
-			data-comp="base-view"
-			testID={props.testID ?? "29:6703"}
+			testID={props.testID ?? "base-view"}
 			style={[vstyles.root(), props.style]}
 		>
 			<P4EBottomBackground testID="33:5266" />

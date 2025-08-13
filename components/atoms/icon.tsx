@@ -76,7 +76,10 @@ export function Icon({
 	) as ReactElement;
 
 	return (
-		<View style={[{ width: size, height: size }, style]} testID={testID}>
+		<View
+			style={[{ width: size, height: size }, style]}
+			testID={testID ?? "icon"}
+		>
 			{coloredSvg}
 		</View>
 	);

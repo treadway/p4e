@@ -13,11 +13,7 @@ export function P4EBackground(props: P4EBackgroundProps) {
 	const { styles } = useStyles(stylesheet);
 
 	return (
-		<View
-			data-comp="p-4-e-background"
-			style={styles.root}
-			testID={props.testID ?? "33:5254"}
-		>
+		<View style={styles.root} testID={props.testID ?? "p-4-e-background"}>
 			<Image url={image} width={375} height={671} />
 			<View style={styles.gradient} testID="33:5186"></View>
 		</View>

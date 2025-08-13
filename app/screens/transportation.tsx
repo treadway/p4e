@@ -12,7 +12,7 @@ export default function TransportationScreen() {
 
 	return (
 		<ScrollView
-			data-comp="transportation"
+			testID="transportation"
 			style={styles.container}
 			contentContainerStyle={styles.content}
 		>

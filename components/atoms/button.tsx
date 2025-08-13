@@ -79,10 +79,9 @@ export function Button({
 
 	return (
 		<Pressable
-			data-comp="button"
 			onPress={onPress}
 			disabled={isDisabled}
-			testID={testID}
+			testID={testID ?? "button"}
 			style={(state: PressableStateCallbackType) => [
 				vstyles.root(state),
 				fullOverride,

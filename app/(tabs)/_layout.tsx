@@ -30,13 +30,13 @@ function BaseLayoutWrapper({
 	return (
 		<View
 			data-comp="_layout"
-			testID={testID ?? "base-layout"}
+			testID={testID ?? "_layout"}
 			style={[vstyles.root()]}
 		>
 			{/* Background - positioned based on imagePosition variant */}
 			{imagePosition === "Bottom" && (
 				<P4EBackground
-					testID="background-bottom"
+					testID="p-4-e-background"
 					style={vstyles.backgroundBottom()}
 				/>
 			)}

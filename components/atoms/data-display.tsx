@@ -27,7 +27,11 @@ export function DataDisplay(props: DataDisplayProps) {
 	);
 
 	return (
-		<View style={vstyles.root()} testID={props.testID ?? "183:40909"}>
+		<View
+			data-comp="data-disply"
+			style={vstyles.root()}
+			testID={props.testID ?? "183:40909"}
+		>
 			<Icon svg={CheckSvg} size={16} color="#00C851" stroke="#00C851" />
 
 			<Text style={vstyles.info()} testID="67:12757">

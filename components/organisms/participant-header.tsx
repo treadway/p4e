@@ -35,7 +35,7 @@ export function ParticipantHeader({
 	);
 
 	return (
-		<View style={vstyles.root()} testID={testID}>
+		<View data-comp="participant-header" style={vstyles.root()} testID={testID}>
 			{/* Top circle with participant image + badge */}
 			<View style={vstyles.participant()} testID="participant">
 				<View style={vstyles.imageAndBadge()} testID="imageAndBadge">

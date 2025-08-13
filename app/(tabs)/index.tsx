@@ -9,6 +9,7 @@ export default function HomeScreen() {
 
 	return (
 		<ScrollView
+			data-comp="(tabs)/index"
 			style={styles.container}
 			contentContainerStyle={styles.contentContainer}
 			showsVerticalScrollIndicator={false}

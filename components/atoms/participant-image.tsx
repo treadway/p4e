@@ -13,7 +13,11 @@ export function ParticipantImage({ uri, testID }: ParticipantImageProps) {
 		uri ?? require("assets/images/participant-default.png");
 
 	return (
-		<View style={styles.root} testID={testID ?? "67:12743"}>
+		<View
+			data-comp="participant-image"
+			style={styles.root}
+			testID={testID ?? "67:12743"}
+		>
 			<View style={styles.innerCircle} testID="67:12739" />
 			<Image
 				source={

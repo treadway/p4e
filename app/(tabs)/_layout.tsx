@@ -1,9 +1,9 @@
-// app/(tabs)/_layout.tsx (renamed from base-view, this becomes your main layout)
+// app/(tabs)/_layout.tsx
 import { Tabs } from "expo-router";
 import { useStyles, createStyleSheet } from "styles";
 import { useVariants } from "@/utils/useVariants";
 import { View } from "react-native";
-import { P4EBackground } from "components/atoms/p-4-e-background"; // Fixed import
+import { P4EBackground } from "components/atoms/p-4-e-background"; // Fixed import path
 
 export interface BaseLayoutProps {
 	imagePosition: (typeof BaseLayoutVariants.imagePosition)[number];
@@ -15,8 +15,11 @@ export const BaseLayoutVariants = {
 	imagePosition: ["Bottom", "Top"],
 } as const;
 
-function BaseLayoutWrapper({ children, ...props }: BaseLayoutProps) {
-	const { imagePosition } = props;
+function BaseLayoutWrapper({
+	children,
+	imagePosition,
+	testID,
+}: BaseLayoutProps) {
 	const { styles } = useStyles(stylesheet);
 	const { vstyles } = useVariants(
 		BaseLayoutVariants,
@@ -25,17 +28,27 @@ function BaseLayoutWrapper({ children, ...props }: BaseLayoutProps) {
 	);
 
 	return (
-		<View testID={props.testID ?? "base-layout"} style={[vstyles.root()]}>
-			{/* Background component - only show if imagePosition is Bottom */}
+		<View
+			data-comp="_layout"
+			testID={testID ?? "base-layout"}
+			style={[vstyles.root()]}
+		>
+			{/* Background - positioned based on imagePosition variant */}
 			{imagePosition === "Bottom" && (
-				<P4EBackground testID="background-bottom" />
+				<P4EBackground
+					testID="background-bottom"
+					style={vstyles.backgroundBottom()}
+				/>
+			)}
+			{imagePosition === "Top" && (
+				<P4EBackground
+					testID="background-top"
+					style={vstyles.backgroundTop()}
+				/>
 			)}
 
-			{/* Main content area */}
+			{/* Main content area where tabs will render */}
 			<View style={vstyles.contentArea()}>{children}</View>
-
-			{/* Top background if needed */}
-			{imagePosition === "Top" && <P4EBackground testID="background-top" />}
 		</View>
 	);
 }
@@ -47,7 +60,26 @@ export default function TabsLayout() {
 				screenOptions={{
 					headerShown: false,
 					tabBarStyle: {
-						// Add your tab bar styling here from themes
+						position: "absolute",
+						bottom: 0,
+						left: 0,
+						right: 0,
+						backgroundColor: "white",
+						borderTopWidth: 1,
+						borderTopColor: "#E5E5E5",
+						paddingBottom: 20, // Account for safe area
+						height: 80,
+						shadowColor: "#000",
+						shadowOffset: { width: 0, height: -2 },
+						shadowOpacity: 0.1,
+						shadowRadius: 8,
+						elevation: 5,
+					},
+					tabBarActiveTintColor: "#22C55E", // Your green theme
+					tabBarInactiveTintColor: "#6B7280",
+					tabBarLabelStyle: {
+						fontSize: 12,
+						fontWeight: "500",
 					},
 				}}
 			>
@@ -55,28 +87,65 @@ export default function TabsLayout() {
 					name="index"
 					options={{
 						title: "Transportation",
-						// Add tab icon here
+						tabBarIcon: ({ color, size }) => (
+							// You'll want to replace this with your actual icon component
+							<View
+								style={{
+									width: size,
+									height: size,
+									backgroundColor: color,
+									borderRadius: size / 2,
+								}}
+							/>
+						),
 					}}
 				/>
 				<Tabs.Screen
 					name="rewards"
 					options={{
 						title: "Rewards",
-						// Add tab icon here
+						tabBarIcon: ({ color, size }) => (
+							<View
+								style={{
+									width: size,
+									height: size,
+									backgroundColor: color,
+									borderRadius: size / 2,
+								}}
+							/>
+						),
 					}}
 				/>
 				<Tabs.Screen
 					name="coming-soon"
 					options={{
 						title: "Coming Soon",
-						// Add tab icon here
+						tabBarIcon: ({ color, size }) => (
+							<View
+								style={{
+									width: size,
+									height: size,
+									backgroundColor: color,
+									borderRadius: size / 2,
+								}}
+							/>
+						),
 					}}
 				/>
 				<Tabs.Screen
 					name="about"
 					options={{
 						title: "About",
-						// Add tab icon here
+						tabBarIcon: ({ color, size }) => (
+							<View
+								style={{
+									width: size,
+									height: size,
+									backgroundColor: color,
+									borderRadius: size / 2,
+								}}
+							/>
+						),
 					}}
 				/>
 			</Tabs>
@@ -91,15 +160,35 @@ const stylesheet = createStyleSheet((theme) => ({
 		backgroundColor: theme.page.background,
 		position: "relative",
 	},
+
 	contentArea: {
 		flex: 1,
 		zIndex: 1, // Ensure content is above background
+		paddingBottom: theme.spacing.navBottom, // Account for tab bar
 	},
-	// Variants for image positioning
+
+	backgroundBottom: {
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		right: 0,
+		zIndex: 0,
+	},
+
+	backgroundTop: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		zIndex: 0,
+	},
+
+	// Variant styles
 	rootImagePositionTop: {
-		// Any specific styles for top positioning
+		// Any specific adjustments when background is at top
 	},
+
 	rootImagePositionBottom: {
-		// Any specific styles for bottom positioning
+		// Any specific adjustments when background is at bottom
 	},
 }));

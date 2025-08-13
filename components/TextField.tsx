@@ -11,7 +11,11 @@ export function InputField(props: InputFieldProps) {
 	const { styles } = useStyles(stylesheet);
 
 	return (
-		<View style={styles.root} testID={props.testID ?? "529:19375"}>
+		<View
+			data-comp="text-field"
+			style={styles.root}
+			testID={props.testID ?? "529:19375"}
+		>
 			<View style={styles.textField} testID="529:19370">
 				<View style={styles.fieldText2} testID="529:19371">
 					<Text style={styles.fieldText} testID="529:19372">

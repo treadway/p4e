@@ -79,6 +79,7 @@ export function Button({
 
 	return (
 		<Pressable
+			data-comp="button"
 			onPress={onPress}
 			disabled={isDisabled}
 			testID={testID}

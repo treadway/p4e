@@ -28,11 +28,7 @@ function BaseLayoutWrapper({
 	);
 
 	return (
-		<View
-			data-comp="_layout"
-			testID={testID ?? "_layout"}
-			style={[vstyles.root()]}
-		>
+		<View testID={testID ?? "(tabs)/_layout"} style={[vstyles.root()]}>
 			{/* Background - positioned based on imagePosition variant */}
 			{imagePosition === "Bottom" && (
 				<P4EBackground

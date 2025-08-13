@@ -3,35 +3,10 @@ import React from "react";
 import { ImageBackground, ScrollView } from "react-native";
 import { useStyles, createStyleSheet } from "styles";
 import { ParticipantHeader } from "components/organisms/participant-header";
+import TransportationScreen from "@/app/screens/transportation";
 
-export default function HomeScreen() {
-	const { styles } = useStyles(stylesheet);
-
-	return (
-		<ScrollView
-			testID="(tabs)/index"
-			style={styles.container}
-			contentContainerStyle={styles.contentContainer}
-			showsVerticalScrollIndicator={false}
-		>
-			<ImageBackground
-				style={styles.backgroundImage}
-				source={require("@/assets/images/content/bottom-background-1.png")}
-				resizeMode="cover"
-			>
-				<ParticipantHeader
-					curvedBottom="True"
-					edit="True"
-					testID="homeParticipantHeader"
-				/>
-
-				{/* TODO: Add your other sections here */}
-				{/* - Earnings History Card */}
-				{/* - Transportation Methods Card */}
-				{/* - Recent Activity */}
-			</ImageBackground>
-		</ScrollView>
-	);
+export default function TabIndexScreen() {
+	return <TransportationScreen />;
 }
 
 const stylesheet = createStyleSheet((theme) => ({

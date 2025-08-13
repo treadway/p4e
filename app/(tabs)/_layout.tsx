@@ -28,30 +28,35 @@ function BaseLayoutWrapper({
 	);
 
 	return (
-		<View testID={testID ?? "(tabs)/_layout"} style={[vstyles.root()]}>
+		<View testID={testID ?? "BaseLayoutWrapper"} style={[vstyles.root()]}>
 			{/* Background - positioned based on imagePosition variant */}
 			{imagePosition === "Bottom" && (
 				<P4EBackground
-					testID="p-4-e-background"
+					testID="BaseLayoutWrapper-background-bottom"
 					style={vstyles.backgroundBottom()}
 				/>
 			)}
 			{imagePosition === "Top" && (
 				<P4EBackground
-					testID="background-top"
+					testID="BaseLayoutWrapper-background-top"
 					style={vstyles.backgroundTop()}
 				/>
 			)}
 
 			{/* Main content area where tabs will render */}
-			<View style={vstyles.contentArea()}>{children}</View>
+			<View
+				testID="BaseLayoutWrapper-content-area"
+				style={vstyles.contentArea()}
+			>
+				{children}
+			</View>
 		</View>
 	);
 }
 
 export default function TabsLayout() {
 	return (
-		<BaseLayoutWrapper imagePosition="Bottom">
+		<BaseLayoutWrapper imagePosition="Bottom" testID="(tabs)/_layout">
 			<Tabs
 				screenOptions={{
 					headerShown: false,
@@ -84,8 +89,8 @@ export default function TabsLayout() {
 					options={{
 						title: "Transportation",
 						tabBarIcon: ({ color, size }) => (
-							// You'll want to replace this with your actual icon component
 							<View
+								testID="(tabs)/_layout-transportation-icon"
 								style={{
 									width: size,
 									height: size,
@@ -102,6 +107,7 @@ export default function TabsLayout() {
 						title: "Rewards",
 						tabBarIcon: ({ color, size }) => (
 							<View
+								testID="(tabs)/_layout-rewards-icon"
 								style={{
 									width: size,
 									height: size,
@@ -118,6 +124,7 @@ export default function TabsLayout() {
 						title: "Coming Soon",
 						tabBarIcon: ({ color, size }) => (
 							<View
+								testID="(tabs)/_layout-coming-soon-icon"
 								style={{
 									width: size,
 									height: size,
@@ -134,6 +141,7 @@ export default function TabsLayout() {
 						title: "About",
 						tabBarIcon: ({ color, size }) => (
 							<View
+								testID="(tabs)/_layout-about-icon"
 								style={{
 									width: size,
 									height: size,

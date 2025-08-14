@@ -29,19 +29,13 @@ function BaseLayoutWrapper({
 
 	return (
 		<View testID={testID ?? "BaseLayoutWrapper"} style={[vstyles.root()]}>
-			{/* Background - positioned based on imagePosition variant */}
-			{imagePosition === "Bottom" && (
-				<P4EBackground
-					testID="BaseLayoutWrapper-background-bottom"
-					style={vstyles.backgroundBottom()}
-				/>
-			)}
-			{imagePosition === "Top" && (
-				<P4EBackground
-					testID="BaseLayoutWrapper-background-top"
-					style={vstyles.backgroundTop()}
-				/>
-			)}
+			{/* Enhanced P4E Background - handles its own positioning */}
+			<P4EBackground
+				position={imagePosition}
+				section="Transportation" // TODO: Make this dynamic based on current tab
+				imageVariant="1"
+				testID={`BaseLayoutWrapper-background-${imagePosition.toLowerCase()}`}
+			/>
 
 			{/* Main content area where tabs will render */}
 			<View
@@ -167,27 +161,12 @@ const stylesheet = createStyleSheet((theme) => ({
 
 	contentArea: {
 		flex: 1,
-		zIndex: 1, // Ensure content is above background
+		zIndex: 10, // Much higher z-index to ensure it's above background
 		paddingBottom: theme.spacing.navBottom, // Account for tab bar
+		elevation: 10, // Android elevation
 	},
 
-	backgroundBottom: {
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		right: 0,
-		zIndex: 0,
-	},
-
-	backgroundTop: {
-		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		zIndex: 0,
-	},
-
-	// Variant styles
+	// Variant styles - no longer needed since P4EBackground handles positioning
 	rootImagePositionTop: {
 		// Any specific adjustments when background is at top
 	},

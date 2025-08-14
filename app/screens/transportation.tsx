@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, View, Text } from "react-native";
 import { useStyles, createStyleSheet } from "styles";
-import { ParticipantHeader } from "components/organisms/participant-header";
+import { ParticipantHeader } from "@/components/organisms/participant-header";
 
 // Mock participant data - replace with your actual data source
 const mockParticipantData = {

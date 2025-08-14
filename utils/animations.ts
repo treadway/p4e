@@ -1,5 +1,5 @@
-// utils/animations.ts - Global animation configuration system
-import { Easing } from "react-native";
+/ utils/animations.ts - Global animation configuration system
+import { Easing } from 'react-native';
 
 export interface AnimationConfig {
 	duration: number;
@@ -16,9 +16,7 @@ export interface AnimationPresets {
 // Global animation multiplier - adjust this to speed up/slow down all animations
 const GLOBAL_ANIMATION_SPEED = 1.0; // 1.0 = normal, 0.5 = half speed, 2.0 = double speed
 
-export const createAnimationPresets = (
-	speedMultiplier: number = 1
-): AnimationPresets => ({
+export const createAnimationPresets = (speedMultiplier: number = 1): AnimationPresets => ({
 	sineInOut: {
 		duration: (400 * GLOBAL_ANIMATION_SPEED) / speedMultiplier,
 		easing: Easing.bezier(0.37, 0, 0.63, 1), // Sine in/out approximation

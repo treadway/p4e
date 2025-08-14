@@ -145,7 +145,7 @@ export function ParticipantHeader({
 
 	return (
 		<Animated.View
-			testID={testID ?? "participant-header/index"}
+			testID={"!!!participant-header/index"}
 			style={[styles.container, { height: containerHeight }]}
 		>
 			{/* Avatar - Always visible */}

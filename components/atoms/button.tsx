@@ -95,6 +95,7 @@ export function Button({
 					iconNode &&
 					cloneElement(iconNode as React.ReactElement, {
 						color: contentColor,
+						fill: contentColor, // Add this line
 					})}
 				{/* label */}
 				{text === "On" && icon !== "Only" && (
@@ -113,7 +114,7 @@ export function Button({
 					iconNode &&
 					cloneElement(iconNode as React.ReactElement, {
 						color: contentColor,
-						userSelect: "none",
+						fill: contentColor, // Add this line
 					})}
 			</View>
 		</Pressable>

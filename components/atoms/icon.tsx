@@ -1,242 +1,129 @@
-// components/atoms/Button.tsx
-import React, { ReactNode, cloneElement } from "react";
-import {
-	Pressable,
-	Text,
-	View,
-	PressableStateCallbackType,
-} from "react-native";
-import { useTheme, useStyles, createStyleSheet } from "styles";
-import { useVariants } from "@/utils/useVariants";
+// components/atoms/icon.tsx
+import React, {
+	ReactElement,
+	ReactNode,
+	isValidElement,
+	cloneElement,
+} from "react";
+import { View, ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
+import { useTheme } from "styles";
 
-export interface ButtonProps {
-	background: (typeof ButtonVariants.background)[number];
-	icon: (typeof ButtonVariants.icon)[number];
-	size: (typeof ButtonVariants.size)[number];
-	state: (typeof ButtonVariants.state)[number];
-	text: (typeof ButtonVariants.text)[number];
-	label?: string;
-	iconNode?: ReactNode;
-	onPress?: () => void;
+export interface IconProps {
+	/** The SVG component (from react-native-svg-transformer) */
+	svg: React.FC<SvgProps>;
+	/** Override fill color; defaults to theme.colors.success */
+	color?: string;
+	/** Optional stroke color */
+	stroke?: string;
+	/** Icon width & height */
+	size?: number;
+	/** Extra container styling */
+	style?: ViewStyle;
 	testID?: string;
 }
 
-export const ButtonVariants = {
-	background: ["On", "Off"],
-	icon: ["Off", "Left", "Right", "Only"],
-	size: ["Default", "Small"],
-	state: ["Active", "Disabled"],
-	text: ["On", "Off"],
-} as const;
+/**
+ * AGGRESSIVE color override - forces colors on ALL SVG elements
+ */
+function forceColorOverride(
+	node: ReactNode,
+	fillColor: string | undefined,
+	strokeColor: string | undefined
+): ReactNode {
+	if (!isValidElement(node)) return node;
 
-export function Button({
-	background,
-	icon,
-	size,
-	state,
-	text,
-	label = "Button",
-	iconNode,
-	onPress,
-	testID,
-}: ButtonProps) {
-	const theme = useTheme();
-	const { styles } = useStyles(stylesheet);
-	const { vstyles } = useVariants(
-		ButtonVariants,
-		{ background, icon, size, state, text },
-		styles
+	const elementType = typeof node.type === "string" ? node.type : "";
+
+	// SVG elements that can have fill/stroke
+	const svgElements = [
+		"path",
+		"g",
+		"circle",
+		"rect",
+		"ellipse",
+		"line",
+		"polyline",
+		"polygon",
+		"svg",
+	];
+
+	if (svgElements.includes(elementType)) {
+		const props: any = { ...node.props };
+
+		// FORCE fill color on elements that typically use fill
+		if (
+			fillColor &&
+			["path", "circle", "rect", "ellipse", "polygon"].includes(elementType)
+		) {
+			props.fill = fillColor;
+			// Also remove any existing fill from style
+			if (props.style) {
+				props.style = { ...props.style, fill: fillColor };
+			}
+		}
+
+		// FORCE stroke color if specified
+		if (strokeColor) {
+			props.stroke = strokeColor;
+			if (props.style) {
+				props.style = { ...props.style, stroke: strokeColor };
+			}
+		}
+
+		// Recursively apply to children
+		const children = React.Children.map(node.props.children, (child) =>
+			forceColorOverride(child, fillColor, strokeColor)
+		);
+
+		return cloneElement(node, props, children);
+	}
+
+	// For non-SVG elements, just recurse through children
+	const children = React.Children.map(node.props.children, (child) =>
+		forceColorOverride(child, fillColor, strokeColor)
 	);
 
-	const isDisabled = state === "Disabled";
-
-	// ① compute colors from theme + on/off/disabled
-	const bgColor = isDisabled
-		? theme.button.background.disabled
-		: background === "On"
-		? theme.button.background.on
-		: theme.button.background.off;
-
-	const contentColor = isDisabled
-		? theme.colors.disabled
-		: background === "On"
-		? theme.button.text.on
-		: theme.button.text.off;
-
-	const borderColor =
-		background === "On"
-			? "transparent"
-			: isDisabled
-			? theme.colors.disabled
-			: theme.button.background.on;
-
-	// build the full N-axis variant key
-	const fullRootKey = `rootText${text}Icon${icon}Size${size}Background${background}State${state}`;
-	const fullOverride = (styles as any)[fullRootKey] || {};
-
-	const fullTextKey = fullRootKey.replace(/^root/, "text");
-	const fullTextOverride = (styles as any)[fullTextKey] || {};
-
-	return (
-		<Pressable
-			onPress={onPress}
-			disabled={isDisabled}
-			testID={testID ?? "button"}
-			style={(state: PressableStateCallbackType) => [
-				vstyles.root(state),
-				fullOverride,
-				{ backgroundColor: bgColor, borderColor },
-				state.pressed && !isDisabled && styles.pressed,
-			]}
-		>
-			<View style={vstyles.content()}>
-				{/* left icon */}
-				{(icon === "Left" || icon === "Only") &&
-					iconNode &&
-					cloneElement(iconNode as React.ReactElement, {
-						color: contentColor,
-					})}
-				{/* label */}
-				{text === "On" && icon !== "Only" && (
-					<Text
-						style={[
-							...vstyles.text(),
-							fullTextOverride,
-							{ color: contentColor },
-						]}
-					>
-						{label}
-					</Text>
-				)}
-				{/* right icon */}
-				{icon === "Right" &&
-					iconNode &&
-					cloneElement(iconNode as React.ReactElement, {
-						color: contentColor,
-						userSelect: "none",
-					})}
-			</View>
-		</Pressable>
-	);
+	return cloneElement(node, node.props, children);
 }
 
-const stylesheet = createStyleSheet((theme) => ({
-	// ─── BASE ─────────────────────────────────────────────────────
-	root: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horz,
-		paddingVertical: theme.button.padding.vert,
-		borderRadius: theme.button.radii,
-		borderWidth: theme.button.border.width,
-		borderStyle: theme.button.border.style,
-		shadowColor: theme.button.shadow.color,
-		shadowOffset: {
-			width: theme.button.shadow.x,
-			height: theme.button.shadow.y,
-		},
-		shadowRadius: theme.button.shadow.blur,
-		shadowOpacity: theme.button.shadow.opacity ?? 1,
-	},
+export function Icon({
+	svg: Svg,
+	color,
+	stroke,
+	size = 24,
+	style,
+	testID,
+}: IconProps) {
+	const theme = useTheme();
+	const fillColor = color ?? theme.colors.success;
+	const strokeColor = stroke;
 
-	pressed: {
-		shadowOffset: {
-			width: theme.button.shadow.pressed.x,
-			height: theme.button.shadow.pressed.y,
-		},
-		shadowRadius: theme.button.shadow.pressed.blur,
-	},
+	// Create the SVG with forced colors
+	const svgElement = (
+		<Svg
+			width={size}
+			height={size}
+			fill={fillColor}
+			stroke={strokeColor}
+			// Additional style override
+			style={{ fill: fillColor, stroke: strokeColor } as any}
+		/>
+	);
 
-	content: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: theme.spacing.xs,
-	},
+	// Apply aggressive color override
+	const coloredSvg = forceColorOverride(
+		svgElement,
+		fillColor,
+		strokeColor
+	) as ReactElement;
 
-	text: {
-		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize.sm,
-		fontWeight: theme.typography.fontWeight.bold,
-	},
-
-	// ─── “Icon-Only” OVERRIDES ─────────────────────────────────────────────
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateActive: {
-		width: theme.button.size.default,
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horzIcon,
-		borderRadius: theme.button.size.default,
-	},
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
-		width: theme.button.size.small,
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzIcon,
-		borderRadius: theme.button.size.small,
-	},
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateDisabled: {
-		width: theme.button.size.default,
-		height: theme.button.size.default,
-		paddingHorizontal: theme.button.padding.horzIcon,
-		borderRadius: theme.button.size.default,
-	},
-	rootTextOffIconOnlySizeSmallBackgroundOffStateDisabled: {
-		width: theme.button.size.small,
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzIcon,
-		borderRadius: theme.button.size.small,
-	},
-
-	// ─── “Small” SIZE OVERRIDES (text+icon) ────────────────────────────────
-	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
-		fontSize: theme.typography.fontSize.xs,
-	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateDisabled: {
-		height: theme.button.size.small,
-		paddingHorizontal: theme.button.padding.horzSm,
-	},
-}));
+	return (
+		<View
+			style={[{ width: size, height: size }, style]}
+			testID={testID ?? "Icon"}
+		>
+			{coloredSvg}
+		</View>
+	);
+}

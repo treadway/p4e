@@ -6,19 +6,18 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Animated,
-	Image,
 } from "react-native";
 import { useStyles, createStyleSheet } from "styles";
 import { useVariants } from "@/utils/useVariants";
+import { useAnimations } from "@/utils/animations";
+import { InputField } from "components/atoms/input-field";
+import { BadgeParticipant } from "components/atoms/badge-participant";
 import { Button } from "components/atoms/button";
+import { DataDisplay } from "components/atoms/data-display";
+import { ParticipantImage } from "components/atoms/participant-image";
 import EditIcon from "@/assets/icons/pencil-fill.svg";
 import PlusIcon from "@/assets/icons/plus-circle.svg";
 import { Icon } from "components/atoms/icon";
-
-// Import these only if they exist, otherwise we'll create fallbacks
-// import { BadgeParticipant } from "components/atoms/badge-participant";
-// import { DataDisplay } from "components/atoms/data-display";
-// import { ParticipantImage } from "components/atoms/participant-image";
 
 interface ParticipantData {
 	name: string;
@@ -42,68 +41,13 @@ export const ParticipantHeaderVariants = {
 	edit: ["False", "True"],
 } as const;
 
-// Fallback components for missing ones
-const FallbackBadge = ({ testID }: { testID?: string }) => (
-	<View
-		testID={testID}
-		style={{
-			width: 32,
-			height: 32,
-			backgroundColor: "#22C55E",
-			borderRadius: 16,
-			justifyContent: "center",
-			alignItems: "center",
-		}}
-	>
-		<Text style={{ color: "white", fontSize: 12, fontWeight: "bold" }}>⭐</Text>
-	</View>
-);
-
-const FallbackDataDisplay = ({ testID }: { testID?: string }) => (
-	<View
-		testID={testID}
-		style={{
-			backgroundColor: "#22C55E",
-			paddingHorizontal: 12,
-			paddingVertical: 6,
-			borderRadius: 16,
-			flexDirection: "row",
-			alignItems: "center",
-			gap: 4,
-		}}
-	>
-		<Text style={{ color: "white", fontSize: 12, fontWeight: "bold" }}>
-			🔺 {55000}
-		</Text>
-	</View>
-);
-
-const FallbackParticipantImage = ({
-	uri,
-	testID,
-}: {
-	uri: any;
-	testID?: string;
-}) => (
-	<Image
-		testID={testID}
-		source={typeof uri === "string" ? { uri } : uri}
-		style={{
-			width: 128,
-			height: 128,
-			borderRadius: 64,
-			backgroundColor: "#E5E5E5",
-		}}
-	/>
-);
-
 export function ParticipantHeader({
 	participant,
 	onSave,
 	onImageUpload,
 	curvedBottom = "True",
 	edit = "True",
-	animationSpeed = 1,
+	animationSpeed,
 	testID = "ParticipantHeader",
 }: ParticipantHeaderProps) {
 	const { styles } = useStyles(stylesheet);
@@ -112,6 +56,7 @@ export function ParticipantHeader({
 		{ curvedBottom, edit },
 		styles
 	);
+	const animations = useAnimations(animationSpeed);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [editName, setEditName] = useState(participant.name);
@@ -123,45 +68,43 @@ export function ParticipantHeader({
 	const contentOpacity = useRef(new Animated.Value(1)).current;
 	const editOpacity = useRef(new Animated.Value(0)).current;
 
-	const baseDuration = 400 / animationSpeed;
-
 	const enterEditMode = () => {
 		setIsEditing(true);
 
+		// 1. Expand container height with sine in/out ease
+		Animated.timing(containerHeight, {
+			toValue: 450,
+			...animations.sineInOut,
+			useNativeDriver: false,
+		}).start();
+
+		// 2. Default content slides UP and OUT (pulls down slightly first)
 		Animated.sequence([
-			Animated.timing(containerHeight, {
-				toValue: 450,
-				duration: baseDuration,
-				useNativeDriver: false,
+			// Pull down slightly first (elastic effect)
+			Animated.timing(contentSlideY, {
+				toValue: 15, // Pull DOWN first
+				duration: animations.elasticIn.duration * 0.3,
+				easing: animations.elasticIn.easing,
+				useNativeDriver: true,
 			}),
-			Animated.parallel([
-				Animated.timing(contentSlideY, {
-					toValue: -50,
-					duration: baseDuration * 0.3,
-					useNativeDriver: true,
-				}),
-				Animated.timing(contentOpacity, {
-					toValue: 0,
-					duration: baseDuration * 0.5,
-					useNativeDriver: true,
-				}),
-			]),
+			// Then slide up and out of clipped area
+			Animated.timing(contentSlideY, {
+				toValue: -150, // Slide UP and out of clipped view
+				...animations.elasticOut,
+				useNativeDriver: true,
+			}),
 		]).start();
 
+		// 3. Edit content slides IN from bottom with elastic ending
+		editSlideY.setValue(100); // Start below clipped area
+
 		setTimeout(() => {
-			Animated.parallel([
-				Animated.timing(editSlideY, {
-					toValue: 0,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-				Animated.timing(editOpacity, {
-					toValue: 1,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-			]).start();
-		}, baseDuration * 0.3);
+			Animated.timing(editSlideY, {
+				toValue: 0, // Final position with elastic overshoot
+				...animations.elasticOut,
+				useNativeDriver: true,
+			}).start();
+		}, animations.elasticOut.duration * 0.3);
 	};
 
 	const exitEditMode = (shouldSave: boolean = false) => {
@@ -171,39 +114,36 @@ export function ParticipantHeader({
 			setEditName(participant.name);
 		}
 
-		Animated.sequence([
-			Animated.parallel([
-				Animated.timing(editSlideY, {
-					toValue: 100,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-				Animated.timing(editOpacity, {
-					toValue: 0,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-			]),
-			Animated.parallel([
-				Animated.timing(contentSlideY, {
-					toValue: 0,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-				Animated.timing(contentOpacity, {
-					toValue: 1,
-					duration: baseDuration,
-					useNativeDriver: true,
-				}),
-			]),
+		// Reverse the animation sequence
+
+		// 1. Edit content slides OUT to bottom
+		Animated.timing(editSlideY, {
+			toValue: 100, // Slide down and out of clipped area
+			...animations.elasticIn,
+			useNativeDriver: true,
+		}).start();
+
+		// 2. Default content slides IN from top with elastic ending
+		setTimeout(() => {
+			contentSlideY.setValue(-100); // Start from above
+
+			Animated.timing(contentSlideY, {
+				toValue: 0, // Final position with elastic bounce
+				...animations.elasticOut,
+				useNativeDriver: true,
+			}).start();
+		}, animations.elasticIn.duration * 0.2);
+
+		// 3. Contract container height back to original
+		setTimeout(() => {
 			Animated.timing(containerHeight, {
 				toValue: 384,
-				duration: baseDuration,
+				...animations.sineInOut,
 				useNativeDriver: false,
-			}),
-		]).start(() => {
-			setIsEditing(false);
-		});
+			}).start(() => {
+				setIsEditing(false);
+			});
+		}, animations.elasticOut.duration * 0.4);
 	};
 
 	return (
@@ -217,7 +157,7 @@ export function ParticipantHeader({
 					style={vstyles.imageAndBadge()}
 					testID={`${testID}-imageAndBadge`}
 				>
-					<FallbackParticipantImage
+					<ParticipantImage
 						uri={
 							participant.avatar ||
 							require("assets/images/content/running-city-park.png")
@@ -225,106 +165,115 @@ export function ParticipantHeader({
 						testID={`${testID}-participantImage`}
 					/>
 					<View style={vstyles.levelBadge()} testID={`${testID}-levelBadge`}>
-						<FallbackBadge testID={`${testID}-badgeParticipant`} />
+						<BadgeParticipant testID={`${testID}-badgeParticipant`} />
 					</View>
 				</View>
 			</View>
 
-			{/* Default State Content */}
-			<Animated.View
-				style={[
-					vstyles.participantInfo(),
-					{
-						transform: [{ translateY: contentSlideY }],
-						opacity: contentOpacity,
-						pointerEvents: isEditing ? "none" : "auto",
-					},
-				]}
+			{/* Content that switches between default and edit states */}
+			<View
+				style={vstyles.participantInfo()}
 				testID={`${testID}-participantInfo`}
 			>
-				<View style={vstyles.topInfo()} testID={`${testID}-topInfo`}>
-					<View style={vstyles.points()} testID={`${testID}-points`}>
-						<FallbackDataDisplay testID={`${testID}-dataDisplay`} />
+				{/* Default State Content */}
+				<Animated.View
+					style={[
+						{
+							transform: [{ translateY: contentSlideY }],
+							position: isEditing ? "absolute" : "relative",
+							width: "100%",
+							left: 0,
+							right: 0,
+						},
+					]}
+					pointerEvents={isEditing ? "none" : "auto"}
+					testID={`${testID}-defaultContent`}
+				>
+					<View style={vstyles.topInfo()} testID={`${testID}-topInfo`}>
+						<View style={vstyles.points()} testID={`${testID}-points`}>
+							<DataDisplay
+								iconPosition="Left"
+								size="Small"
+								testID={`${testID}-dataDisplay`}
+							/>
+						</View>
+						<View style={vstyles.getPoints()} testID={`${testID}-getPoints`}>
+							<Button
+								background="On"
+								icon="Left"
+								size="Small"
+								state="Active"
+								text="On"
+								label="Get Points!"
+								iconNode={<Icon svg={PlusIcon} size={14} />}
+								testID={`${testID}-getPointsButton`}
+							/>
+						</View>
 					</View>
-					<View style={vstyles.getPoints()} testID={`${testID}-getPoints`}>
-						<Button
-							background="On"
-							icon="Left"
-							size="Small"
-							state="Active"
-							text="On"
-							label="Get Points!"
-							iconNode={<Icon svg={PlusIcon} size={14} />}
-							testID={`${testID}-getPointsButton`}
-						/>
-					</View>
-				</View>
 
-				<View
-					style={vstyles.participantName()}
-					testID={`${testID}-participantName`}
-				>
-					<Text style={vstyles.gusSlomecki()} testID={`${testID}-nameText`}>
-						{participant.name}
-					</Text>
-					<Text style={vstyles.earthHero()} testID={`${testID}-subtitleText`}>
-						{participant.title}
-					</Text>
-				</View>
-			</Animated.View>
-
-			{/* Edit State Content */}
-			<Animated.View
-				style={[
-					vstyles.editContent(),
-					{
-						transform: [{ translateY: editSlideY }],
-						opacity: editOpacity,
-						pointerEvents: isEditing ? "auto" : "none",
-					},
-				]}
-				testID={`${testID}-editContent`}
-			>
-				<Text
-					style={vstyles.screenNameLabel()}
-					testID={`${testID}-screenNameLabel`}
-				>
-					Screen Name
-				</Text>
-				<TextInput
-					style={vstyles.nameInput()}
-					value={editName}
-					onChangeText={setEditName}
-					placeholder="Enter name..."
-					testID={`${testID}-nameInput`}
-				/>
-
-				<TouchableOpacity
-					style={vstyles.uploadButton()}
-					onPress={onImageUpload}
-					testID={`${testID}-uploadButton`}
-				>
-					<Text style={vstyles.uploadText()}>☁️ Upload Image</Text>
-				</TouchableOpacity>
-
-				<View style={vstyles.buttonRow()}>
-					<TouchableOpacity
-						style={[vstyles.actionButton(), vstyles.saveButton()]}
-						onPress={() => exitEditMode(true)}
-						testID={`${testID}-saveButton`}
+					<View
+						style={vstyles.participantName()}
+						testID={`${testID}-participantName`}
 					>
-						<Text style={vstyles.saveText()}>✅ Save</Text>
-					</TouchableOpacity>
+						<Text style={vstyles.nameText()} testID={`${testID}-nameText`}>
+							{participant.name}
+						</Text>
+						<Text style={vstyles.levelText()} testID={`${testID}-levelText`}>
+							{participant.title}
+						</Text>
+					</View>
+				</Animated.View>
+
+				{/* Edit State Content */}
+				<Animated.View
+					style={[
+						vstyles.editContent(),
+						{
+							transform: [{ translateY: editSlideY }],
+							position: isEditing ? "relative" : "absolute",
+							width: "100%",
+							left: 0,
+							right: 0,
+						},
+					]}
+					pointerEvents={isEditing ? "auto" : "none"}
+					testID={`${testID}-editContent`}
+				>
+					<InputField
+						label="Screen Name"
+						placeholder="Enter name..."
+						value={editName}
+						onChangeText={setEditName}
+						testID={`${testID}-nameInput`}
+					/>
 
 					<TouchableOpacity
-						style={[vstyles.actionButton(), vstyles.cancelButton()]}
-						onPress={() => exitEditMode(false)}
-						testID={`${testID}-cancelButton`}
+						style={vstyles.uploadButton()}
+						onPress={onImageUpload}
+						testID={`${testID}-uploadButton`}
 					>
-						<Text style={vstyles.cancelText()}>❌ Cancel</Text>
+						<Text style={vstyles.uploadText()}>☁️ Upload Image</Text>
 					</TouchableOpacity>
-				</View>
-			</Animated.View>
+
+					<View style={vstyles.buttonRow()}>
+						<TouchableOpacity
+							style={[vstyles.actionButton(), vstyles.saveButton()]}
+							onPress={() => exitEditMode(true)}
+							testID={`${testID}-saveButton`}
+						>
+							<Text style={vstyles.saveText()}>✅ Save</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							style={[vstyles.actionButton(), vstyles.cancelButton()]}
+							onPress={() => exitEditMode(false)}
+							testID={`${testID}-cancelButton`}
+						>
+							<Text style={vstyles.cancelText()}>❌ Cancel</Text>
+						</TouchableOpacity>
+					</View>
+				</Animated.View>
+			</View>
 
 			{/* Bottom decorative circle */}
 			<View style={vstyles.bottomCircle()} testID={`${testID}-bottomCircle`}>
@@ -357,7 +306,8 @@ export function ParticipantHeader({
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
 		width: theme.participantHeader.width,
-		paddingTop: theme.spacing.xxl,
+		paddingTop:
+			theme.spacing.xxl + theme.participantHeader.participantImage.size / 2,
 		flexDirection: "column",
 		alignItems: "center",
 		overflow: "hidden",
@@ -416,6 +366,8 @@ const stylesheet = createStyleSheet((theme) => ({
 			width: theme.card.shadow.x,
 			height: theme.card.shadow.y,
 		},
+		overflow: "hidden", // Clip content during animations
+		width: theme.participantHeader.width, // Fixed width to prevent changes
 	},
 
 	topInfo: {
@@ -454,7 +406,16 @@ const stylesheet = createStyleSheet((theme) => ({
 		height: 24,
 	},
 
-	gusSlomecki: {
+	participantName: {
+		paddingTop: theme.spacing.xl,
+		paddingBottom: theme.spacing.lg,
+		rowGap: theme.spacing.none,
+		flexDirection: "column",
+		alignItems: "center",
+		alignSelf: "stretch",
+	},
+
+	nameText: {
 		alignSelf: "stretch",
 		color: theme.colors.text.default,
 		textAlign: "center",
@@ -463,7 +424,7 @@ const stylesheet = createStyleSheet((theme) => ({
 		fontWeight: theme.typography.fontWeight.bold,
 	},
 
-	earthHero: {
+	levelText: {
 		color: theme.colors.successDark,
 		textAlign: "center",
 		fontFamily: theme.typography.fontFamily,
@@ -472,16 +433,8 @@ const stylesheet = createStyleSheet((theme) => ({
 		letterSpacing: theme.typography.letterSpacing.default,
 	},
 
-	participantName: {
-		paddingTop: theme.spacing.sm,
-		paddingBottom: theme.spacing.lg,
-		flexDirection: "column",
-		alignItems: "center",
-		alignSelf: "stretch",
-	},
-
 	participantNameCurvedBottomTrueEditTrue: {
-		rowGap: theme.spacing.xl,
+		rowGap: theme.spacing.none,
 		columnGap: theme.spacing.xl,
 	},
 
@@ -556,40 +509,16 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	editContent: {
-		position: "absolute",
-		top: 100,
-		left: theme.spacing.md,
-		right: theme.spacing.md,
-		backgroundColor: theme.colors.background.default,
-		borderRadius: theme.card.borderRadius,
-		padding: theme.spacing.lg,
-		shadowColor: theme.card.shadow.color,
-		shadowRadius: theme.card.shadow.blur,
-		shadowOffset: {
-			width: theme.card.shadow.x,
-			height: theme.card.shadow.y,
-		},
-		elevation: 5,
-	},
-
-	screenNameLabel: {
-		fontSize: theme.typography.fontSize.sm,
-		color: theme.colors.neutral.grayDark,
-		marginBottom: theme.spacing.xs,
-		fontFamily: theme.typography.fontFamily,
-	},
-
-	nameInput: {
-		borderWidth: 1,
-		borderColor: theme.colors.neutral.grayLight,
-		borderRadius: theme.button.radii,
+		// Position edit content WITHIN the participantInfo card, not as overlay
 		paddingHorizontal: theme.spacing.md,
-		paddingVertical: theme.spacing.sm,
-		fontSize: theme.typography.fontSize.base,
-		marginBottom: theme.spacing.md,
-		backgroundColor: "white",
-		fontFamily: theme.typography.fontFamily,
+		paddingTop: theme.spacing.lg,
+		paddingBottom: theme.spacing.lg,
+		width: "100%", // Ensure consistent width
 	},
+
+	// Remove these old styles since we're using InputField component
+	// screenNameLabel: { ... }
+	// nameInput: { ... }
 
 	uploadButton: {
 		backgroundColor: theme.colors.success,

@@ -8,7 +8,7 @@ const mockParticipantData = {
 	name: "Gus Slomecki",
 	title: "Earth Hero",
 	points: 55000,
-	avatar: "https://via.placeholder.com/80x80", // Replace with actual avatar
+	// avatar: "https://via.placeholder.com/80x80", // Replace with actual avatar
 };
 
 export default function TransportationScreen() {

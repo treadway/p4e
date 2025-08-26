@@ -15,8 +15,10 @@ export interface ButtonProps {
 	size: (typeof ButtonVariants.size)[number];
 	state: (typeof ButtonVariants.state)[number];
 	text: (typeof ButtonVariants.text)[number];
+	variant?: (typeof ButtonVariants.variant)[number];
 	label?: string;
 	iconNode?: ReactNode;
+	iconName?: string; // Add this for testID purposes
 	onPress?: () => void;
 	testID?: string;
 }
@@ -27,6 +29,7 @@ export const ButtonVariants = {
 	size: ["Default", "Small"],
 	state: ["Active", "Disabled"],
 	text: ["On", "Off"],
+	variant: ["Primary", "Secondary"],
 } as const;
 
 export function Button({
@@ -35,8 +38,10 @@ export function Button({
 	size,
 	state,
 	text,
+	variant = "Primary",
 	label = "Button",
 	iconNode,
+	iconName,
 	onPress,
 	testID,
 }: ButtonProps) {
@@ -44,60 +49,100 @@ export function Button({
 	const { styles } = useStyles(stylesheet);
 	const { vstyles } = useVariants(
 		ButtonVariants,
-		{ background, icon, size, state, text },
+		{ background, icon, size, state, text, variant },
 		styles
 	);
 
 	const isDisabled = state === "Disabled";
 
-	// ① compute colors from theme + on/off/disabled
-	const bgColor = isDisabled
-		? theme.button.background.disabled
-		: background === "On"
-		? theme.button.background.on
-		: theme.button.background.off;
+	// Get background colors based on variant and background state
+	const getBgColor = () => {
+		if (isDisabled) {
+			return theme.button.background.disabled;
+		}
 
-	const contentColor = isDisabled
-		? theme.colors.disabled
-		: background === "On"
-		? theme.button.text.on
-		: theme.button.text.off;
+		if (background === "On") {
+			return variant === "Primary"
+				? theme.button.background.on // tokens.colors.link.light
+				: theme.button.background.secondary; // tokens.colors.link.dark
+		} else {
+			return theme.button.background.off; // tokens.colors.white
+		}
+	};
 
-	const borderColor =
-		background === "On"
-			? "transparent"
-			: isDisabled
-			? theme.colors.disabled
-			: theme.button.background.on;
+	// Get text/icon colors
+	const getContentColor = () => {
+		if (isDisabled) {
+			return theme.colors.disabled;
+		}
 
-	// build the full N-axis variant key
-	const fullRootKey = `rootText${text}Icon${icon}Size${size}Background${background}State${state}`;
+		if (background === "On") {
+			return theme.button.text.on; // tokens.colors.white
+		} else {
+			// For "Off" background, use the variant color for text/icons
+			return variant === "Primary"
+				? theme.button.background.on // tokens.colors.link.light
+				: theme.button.background.secondary; // tokens.colors.link.dark
+		}
+	};
+
+	// Get border color
+	const getBorderColor = () => {
+		if (background === "On") {
+			return "transparent";
+		}
+
+		if (isDisabled) {
+			return theme.colors.disabled;
+		}
+
+		// For "Off" background, use variant color for border
+		return variant === "Primary"
+			? theme.button.background.on // tokens.colors.link.light
+			: theme.button.background.secondary; // tokens.colors.link.dark
+	};
+
+	const bgColor = getBgColor();
+	const contentColor = getContentColor();
+	const borderColor = getBorderColor();
+
+	// Build the full variant key including the new variant
+	const fullRootKey = `rootText${text}Icon${icon}Size${size}Background${background}State${state}Variant${variant}`;
 	const fullOverride = (styles as any)[fullRootKey] || {};
 
 	const fullTextKey = fullRootKey.replace(/^root/, "text");
 	const fullTextOverride = (styles as any)[fullTextKey] || {};
 
+	// Create testID suffix with icon name if provided
+	const getIconTestID = (position: string) => {
+		const baseTestID = testID ?? "Button";
+		const iconSuffix = iconName ? `-${iconName}` : "";
+		return `${baseTestID}-${position}-icon${iconSuffix}`;
+	};
+
 	return (
 		<Pressable
 			onPress={onPress}
 			disabled={isDisabled}
-			testID={testID ?? "button"}
-			style={(state: PressableStateCallbackType) => [
-				vstyles.root(state),
+			testID={testID ?? "Button"}
+			style={(pressState: PressableStateCallbackType) => [
+				vstyles.root(pressState),
 				fullOverride,
 				{ backgroundColor: bgColor, borderColor },
-				state.pressed && !isDisabled && styles.pressed,
+				pressState.pressed && !isDisabled && styles.pressed,
 			]}
 		>
 			<View style={vstyles.content()}>
-				{/* left icon */}
+				{/* Left icon */}
 				{(icon === "Left" || icon === "Only") &&
 					iconNode &&
 					cloneElement(iconNode as React.ReactElement, {
 						color: contentColor,
-						fill: contentColor, // Add this line
+						fill: contentColor,
+						testID: getIconTestID("left"),
 					})}
-				{/* label */}
+
+				{/* Label text */}
 				{text === "On" && icon !== "Only" && (
 					<Text
 						style={[
@@ -105,16 +150,19 @@ export function Button({
 							fullTextOverride,
 							{ color: contentColor },
 						]}
+						testID={`${testID ?? "Button"}-text`}
 					>
 						{label}
 					</Text>
 				)}
-				{/* right icon */}
+
+				{/* Right icon */}
 				{icon === "Right" &&
 					iconNode &&
 					cloneElement(iconNode as React.ReactElement, {
 						color: contentColor,
-						fill: contentColor, // Add this line
+						fill: contentColor,
+						testID: getIconTestID("right"),
 					})}
 			</View>
 		</Pressable>
@@ -122,7 +170,7 @@ export function Button({
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-	// ─── BASE ─────────────────────────────────────────────────────
+	// ——— BASE ——————————————————————————————————————————————————————————————————————————————————————————————————————————
 	root: {
 		flexDirection: "row",
 		justifyContent: "center",
@@ -153,7 +201,7 @@ const stylesheet = createStyleSheet((theme) => ({
 	content: {
 		flexDirection: "row",
 		alignItems: "center",
-		gap: theme.spacing.xs,
+		columnGap: theme.spacing.sm,
 	},
 
 	text: {
@@ -162,81 +210,153 @@ const stylesheet = createStyleSheet((theme) => ({
 		fontWeight: theme.typography.fontWeight.bold,
 	},
 
-	// ─── “Icon-Only” OVERRIDES ─────────────────────────────────────────────
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateActive: {
+	// ——— "Icon-Only" OVERRIDES ——————————————————————————————————————————————————————————————————————————————————————
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateActiveVariantPrimary: {
 		width: theme.button.size.default,
 		height: theme.button.size.default,
 		paddingHorizontal: theme.button.padding.horzIcon,
 		borderRadius: theme.button.size.default,
 	},
-	rootTextOffIconOnlySizeSmallBackgroundOffStateActive: {
+	rootTextOffIconOnlySizeSmallBackgroundOffStateActiveVariantPrimary: {
 		width: theme.button.size.small,
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzIcon,
 		borderRadius: theme.button.size.small,
 	},
-	rootTextOffIconOnlySizeDefaultBackgroundOffStateDisabled: {
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateDisabledVariantPrimary: {
 		width: theme.button.size.default,
 		height: theme.button.size.default,
 		paddingHorizontal: theme.button.padding.horzIcon,
 		borderRadius: theme.button.size.default,
 	},
-	rootTextOffIconOnlySizeSmallBackgroundOffStateDisabled: {
+	rootTextOffIconOnlySizeSmallBackgroundOffStateDisabledVariantPrimary: {
 		width: theme.button.size.small,
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzIcon,
 		borderRadius: theme.button.size.small,
 	},
 
-	// ─── “Small” SIZE OVERRIDES (text+icon) ────────────────────────────────
-	rootTextOnIconOffSizeSmallBackgroundOnStateActive: {
+	// Secondary variant icon-only overrides
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateActiveVariantSecondary: {
+		width: theme.button.size.default,
+		height: theme.button.size.default,
+		paddingHorizontal: theme.button.padding.horzIcon,
+		borderRadius: theme.button.size.default,
+	},
+	rootTextOffIconOnlySizeSmallBackgroundOffStateActiveVariantSecondary: {
+		width: theme.button.size.small,
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzIcon,
+		borderRadius: theme.button.size.small,
+	},
+	rootTextOffIconOnlySizeDefaultBackgroundOffStateDisabledVariantSecondary: {
+		width: theme.button.size.default,
+		height: theme.button.size.default,
+		paddingHorizontal: theme.button.padding.horzIcon,
+		borderRadius: theme.button.size.default,
+	},
+	rootTextOffIconOnlySizeSmallBackgroundOffStateDisabledVariantSecondary: {
+		width: theme.button.size.small,
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzIcon,
+		borderRadius: theme.button.size.small,
+	},
+
+	// ——— "Small" SIZE OVERRIDES (text+icon) ————————————————————————————————————————————————————————————————————————
+	rootTextOnIconOffSizeSmallBackgroundOnStateActiveVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateActive: {
+	rootTextOnIconOffSizeSmallBackgroundOffStateActiveVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconOffSizeSmallBackgroundOnStateDisabled: {
+	rootTextOnIconOffSizeSmallBackgroundOnStateDisabledVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconOffSizeSmallBackgroundOffStateDisabled: {
+	rootTextOnIconOffSizeSmallBackgroundOffStateDisabledVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateActive: {
+	rootTextOnIconLeftSizeSmallBackgroundOnStateActiveVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	textTextOnIconLeftSizeSmallBackgroundOnStateActive: {
+	textTextOnIconLeftSizeSmallBackgroundOnStateActiveVariantPrimary: {
 		fontSize: theme.typography.fontSize.xs,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateActive: {
+
+	// Add Secondary variant overrides for small buttons
+	rootTextOnIconOffSizeSmallBackgroundOnStateActiveVariantSecondary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateActive: {
+	rootTextOnIconOffSizeSmallBackgroundOffStateActiveVariantSecondary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateActive: {
+	rootTextOnIconLeftSizeSmallBackgroundOnStateActiveVariantSecondary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabled: {
+	rootTextOnIconLeftSizeSmallBackgroundOffStateActiveVariantSecondary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOnStateDisabled: {
+
+	// Continue with existing overrides but add Secondary variants as needed...
+	rootTextOnIconRightSizeSmallBackgroundOnStateActiveVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabled: {
+	rootTextOnIconLeftSizeSmallBackgroundOffStateActiveVariantPrimary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},
-	rootTextOnIconRightSizeSmallBackgroundOffStateDisabled: {
+	rootTextOnIconRightSizeSmallBackgroundOffStateActiveVariantPrimary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabledVariantPrimary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconRightSizeSmallBackgroundOnStateDisabledVariantPrimary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabledVariantPrimary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconRightSizeSmallBackgroundOffStateDisabledVariantPrimary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+
+	// Secondary variant small size overrides
+	rootTextOnIconRightSizeSmallBackgroundOnStateActiveVariantSecondary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconRightSizeSmallBackgroundOffStateActiveVariantSecondary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconLeftSizeSmallBackgroundOnStateDisabledVariantSecondary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconRightSizeSmallBackgroundOnStateDisabledVariantSecondary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconLeftSizeSmallBackgroundOffStateDisabledVariantSecondary: {
+		height: theme.button.size.small,
+		paddingHorizontal: theme.button.padding.horzSm,
+	},
+	rootTextOnIconRightSizeSmallBackgroundOffStateDisabledVariantSecondary: {
 		height: theme.button.size.small,
 		paddingHorizontal: theme.button.padding.horzSm,
 	},

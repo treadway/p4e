@@ -1,114 +1,10 @@
 // styles/themes.ts
 import { tokens } from "./tokens";
 
-export interface Theme {
-	participantHeader: {
-		width: number;
-		participantImage: { size: number };
-	};
-	colors: {
-		background: { default: string };
-		text: { default: string };
-		success: string;
-		successDark: string;
-		warning: string;
-		warningDark: string;
-		danger: string;
-		dangerDark: string;
-		info: string;
-		infoDark: string;
-		disabled: string;
-		neutral: {
-			white: string;
-			grayLight: string;
-			gray: string;
-			grayDark: string;
-			page: string;
-		};
-	};
-	typography: {
-		fontFamily: string;
-		fontWeight: { regular: string; bold: string; semibold?: string };
-		fontSize: {
-			xs: number;
-			sm: number;
-			base: number;
-			lg: number;
-			xl: number;
-			xxl: number;
-		};
-		letterSpacing: { default: number };
-	};
-	spacing: {
-		xs: number;
-		sm: number;
-		md: number;
-		lg: number;
-		xl: number;
-		xxl: number;
-		auto: number | string;
-		navBottom: number;
-	};
-	page: {
-		width: number;
-		background: string;
-	};
-	button: {
-		size: { default: number; small: number };
-		padding: { horz: number; vert: number; horzIcon: number; horzSm: number };
-		radii: number;
-		border: { width: number; style: string; color: string };
-		shadow: {
-			x: number;
-			y: number;
-			blur: number;
-			spread: number;
-			color: string;
-		};
-		background: { on: string; off: string; disabled: string };
-		text: { on: string; off: string };
-	};
-	card: {
-		borderRadius: number;
-		shadow: {
-			x: number;
-			y: number;
-			blur: number;
-			spread: number;
-			color: string;
-		};
-	};
-	nav: {
-		shadow: {
-			x: number;
-			y: number;
-			blur: number;
-			spread: number;
-			color: string;
-		};
-	};
-	textField: {
-		shadow: {
-			x: number;
-			y: number;
-			blur: number;
-			spread: number;
-			color: string;
-			type?: string;
-		};
-	};
-	badge: {
-		color: string;
-		background: string;
-		stroke: string;
-		size: number;
-	};
-}
-
 //
-// ————————————————————————————————————————————————————
+// ——————————————————————————————————————————————————————————————————————————
 //
-// ————— LIGHT THEME ———————————————————————————————————————
+// ——————— LIGHT THEME ———————————————————————————————————————————————————————
 //
 
 export const lightTheme: Theme = {
@@ -202,8 +98,9 @@ export const lightTheme: Theme = {
 			},
 		},
 		background: {
-			on: tokens.colors.success.light,
+			on: tokens.colors.link.light,
 			off: tokens.colors.white,
+			secondary: tokens.colors.link.dark,
 			disabled: tokens.colors.disabled,
 		},
 		text: {
@@ -234,6 +131,11 @@ export const lightTheme: Theme = {
 	},
 
 	textField: {
+		size: {
+			default: tokens.sizing.formDefault,
+			small: tokens.sizing.formSmall,
+		},
+		borderRadius: tokens.borderRadius.default,
 		shadow: {
 			x: tokens.shadow.textField.x,
 			y: tokens.shadow.textField.y,
@@ -250,12 +152,17 @@ export const lightTheme: Theme = {
 		stroke: "rgba(255, 255, 255, 0.64)",
 		size: 32,
 	},
+
+	divider: {
+		color: tokens.colors.black["33"], // "#C5C5C5"
+		width: 0.5,
+	},
 };
 
 //
-// ————————————————————————————————————————————————————
+// ——————————————————————————————————————————————————————————————————————————
 //
-// ————— DARK THEME ———————————————————————————————————————
+// ——————— DARK THEME ————————————————————————————————————————————————————————
 //
 
 export const darkTheme: Theme = {
@@ -266,4 +173,128 @@ export const darkTheme: Theme = {
 		text: { default: "#FFFFFF" },
 		success: tokens.colors.success.dark,
 	},
+	divider: {
+		...lightTheme.divider,
+		// In dark theme, you might want a lighter divider color
+		color: tokens.colors.black["50"], // or keep the same: tokens.colors.black["33"]
+	},
 };
+
+//
+// ——————————————————————————————————————————————————————————————————————————
+//
+// ——————— TYPES ——————————————————————————————————————————————————————————————
+//
+
+export interface Theme {
+	participantHeader: {
+		width: number;
+		participantImage: { size: number };
+	};
+	colors: {
+		background: { default: string };
+		text: { default: string };
+		success: string;
+		successDark: string;
+		warning: string;
+		warningDark: string;
+		danger: string;
+		dangerDark: string;
+		info: string;
+		infoDark: string;
+		disabled: string;
+		neutral: {
+			white: string;
+			grayLight: string;
+			gray: string;
+			grayDark: string;
+			page: string;
+		};
+	};
+	typography: {
+		fontFamily: string;
+		fontWeight: { regular: string; bold: string; semibold?: string };
+		fontSize: {
+			xs: number;
+			sm: number;
+			base: number;
+			lg: number;
+			xl: number;
+			xxl: number;
+		};
+		letterSpacing: { default: number };
+	};
+	spacing: {
+		xs: number;
+		sm: number;
+		md: number;
+		lg: number;
+		xl: number;
+		xxl: number;
+		auto: number | string;
+		navBottom: number;
+	};
+	page: {
+		width: number;
+		background: string;
+	};
+	button: {
+		size: { default: number; small: number };
+		padding: { horz: number; vert: number; horzIcon: number; horzSm: number };
+		radii: number;
+		border: { width: number; style: string; color: string };
+		shadow: {
+			x: number;
+			y: number;
+			blur: number;
+			spread: number;
+			color: string;
+		};
+		background: {
+			on: string;
+			off: string;
+			secondary: string;
+			disabled: string;
+		};
+		text: { on: string; off: string };
+	};
+	card: {
+		borderRadius: number;
+		shadow: {
+			x: number;
+			y: number;
+			blur: number;
+			spread: number;
+			color: string;
+		};
+	};
+	nav: {
+		shadow: {
+			x: number;
+			y: number;
+			blur: number;
+			spread: number;
+			color: string;
+		};
+	};
+	textField: {
+		shadow: {
+			x: number;
+			y: number;
+			blur: number;
+			spread: number;
+			color: string;
+			type?: string;
+		};
+	};
+	badge: {
+		color: string;
+		background: string;
+		stroke: string;
+		size: number;
+	};
+	divider: {
+		color: string;
+		width: number;
+	};
+}

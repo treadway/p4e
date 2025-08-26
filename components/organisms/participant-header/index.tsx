@@ -17,7 +17,11 @@ import { DataDisplay } from "components/atoms/data-display";
 import { ParticipantImage } from "components/atoms/participant-image";
 import EditIcon from "@/assets/icons/pencil-fill.svg";
 import PlusIcon from "@/assets/icons/plus-circle.svg";
+import CloudUploadIcon from "@/assets/icons/cloud-upload-fill.svg";
+import CheckCircleIcon from "@/assets/icons/check-circle-fill.svg";
+import XCircleIcon from "@/assets/icons/x-circle-fill.svg";
 import { Icon } from "components/atoms/icon";
+import { Divider } from "components/atoms/divider";
 
 interface ParticipantData {
 	name: string;
@@ -247,30 +251,47 @@ export function ParticipantHeader({
 						testID={`${testID}-nameInput`}
 					/>
 
-					<TouchableOpacity
-						style={vstyles.uploadButton()}
+					<Button
+						background="On"
+						icon="Left"
+						size="Default"
+						state="Active"
+						text="On"
+						variant="Secondary"
+						label="Upload Image"
+						iconNode={<Icon svg={CloudUploadIcon} size={16} />}
 						onPress={onImageUpload}
 						testID={`${testID}-uploadButton`}
-					>
-						<Text style={vstyles.uploadText()}>☁️ Upload Image</Text>
-					</TouchableOpacity>
+					/>
+
+					<Divider />
 
 					<View style={vstyles.buttonRow()}>
-						<TouchableOpacity
-							style={[vstyles.actionButton(), vstyles.saveButton()]}
+						<Button
+							background="On"
+							icon="Left"
+							size="Default"
+							state="Active"
+							text="On"
+							variant="Primary"
+							label="Save"
+							iconNode={<Icon svg={CheckCircleIcon} size={16} />}
 							onPress={() => exitEditMode(true)}
 							testID={`${testID}-saveButton`}
-						>
-							<Text style={vstyles.saveText()}>✅ Save</Text>
-						</TouchableOpacity>
+						/>
 
-						<TouchableOpacity
-							style={[vstyles.actionButton(), vstyles.cancelButton()]}
+						<Button
+							background="On"
+							icon="Left"
+							size="Default"
+							state="Active"
+							text="On"
+							variant="Secondary"
+							label="Cancel"
+							iconNode={<Icon svg={XCircleIcon} size={16} />}
 							onPress={() => exitEditMode(false)}
 							testID={`${testID}-cancelButton`}
-						>
-							<Text style={vstyles.cancelText()}>❌ Cancel</Text>
-						</TouchableOpacity>
+						/>
 					</View>
 				</Animated.View>
 			</View>
@@ -311,11 +332,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		flexDirection: "column",
 		alignItems: "center",
 		overflow: "hidden",
-	},
-
-	rootCurvedBottomTrueEditTrue: {
-		height: 384,
-		flexShrink: 0,
 	},
 
 	participant: {
@@ -366,8 +382,8 @@ const stylesheet = createStyleSheet((theme) => ({
 			width: theme.card.shadow.x,
 			height: theme.card.shadow.y,
 		},
-		overflow: "hidden", // Clip content during animations
-		width: theme.participantHeader.width, // Fixed width to prevent changes
+		overflow: "hidden",
+		width: theme.participantHeader.width,
 	},
 
 	topInfo: {
@@ -388,10 +404,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		flexBasis: 0,
 	},
 
-	pointsCurvedBottomTrueEditTrue: {
-		height: 24,
-	},
-
 	getPoints: {
 		flexDirection: "column",
 		alignItems: "flex-end",
@@ -402,14 +414,10 @@ const stylesheet = createStyleSheet((theme) => ({
 		flexBasis: 0,
 	},
 
-	getPointsCurvedBottomTrueEditTrue: {
-		height: 24,
-	},
-
 	participantName: {
 		paddingTop: theme.spacing.xl,
 		paddingBottom: theme.spacing.lg,
-		rowGap: theme.spacing.none,
+		gap: 0,
 		flexDirection: "column",
 		alignItems: "center",
 		alignSelf: "stretch",
@@ -433,11 +441,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		letterSpacing: theme.typography.letterSpacing.default,
 	},
 
-	participantNameCurvedBottomTrueEditTrue: {
-		rowGap: theme.spacing.none,
-		columnGap: theme.spacing.xl,
-	},
-
 	bottomCircle: {
 		flexDirection: "row",
 		width: 278,
@@ -450,21 +453,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		left: 41,
 		bottom: -32,
 		overflow: "hidden",
-	},
-
-	bottomCircleCurvedBottomTrueEditFalse: {
-		paddingBottom: theme.spacing.sm,
-		justifyContent: "space-between",
-		alignItems: "flex-end",
-		alignSelf: "stretch",
-	},
-
-	bottomCircleCurvedBottomTrueEditTrue: {
-		paddingBottom: theme.spacing.sm,
-		justifyContent: "space-between",
-		alignItems: "flex-end",
-		flexShrink: 0,
-		alignSelf: "stretch",
 	},
 
 	bottomCircle2: {
@@ -483,24 +471,6 @@ const stylesheet = createStyleSheet((theme) => ({
 		},
 	},
 
-	bottomCircle2CurvedBottomTrueEditFalse: {
-		padding: theme.spacing.sm,
-		flexDirection: "column",
-		justifyContent: "flex-end",
-		alignItems: "center",
-		rowGap: theme.spacing.sm,
-		columnGap: theme.spacing.sm,
-	},
-
-	bottomCircle2CurvedBottomTrueEditTrue: {
-		padding: theme.spacing.sm,
-		flexDirection: "column",
-		justifyContent: "flex-end",
-		alignItems: "center",
-		rowGap: theme.spacing.sm,
-		columnGap: theme.spacing.sm,
-	},
-
 	editButtonWrapper: {
 		position: "absolute",
 		bottom: theme.spacing.md,
@@ -509,62 +479,16 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	editContent: {
-		// Position edit content WITHIN the participantInfo card, not as overlay
+		rowGap: theme.spacing.xl,
 		paddingHorizontal: theme.spacing.md,
-		paddingTop: theme.spacing.lg,
+		paddingTop: theme.participantHeader.participantImage.size / 2,
 		paddingBottom: theme.spacing.lg,
-		width: "100%", // Ensure consistent width
-	},
-
-	// Remove these old styles since we're using InputField component
-	// screenNameLabel: { ... }
-	// nameInput: { ... }
-
-	uploadButton: {
-		backgroundColor: theme.colors.success,
-		paddingVertical: theme.spacing.md,
-		borderRadius: theme.button.radii,
-		alignItems: "center",
-		marginBottom: theme.spacing.md,
-	},
-
-	uploadText: {
-		color: "white",
-		fontSize: theme.typography.fontSize.base,
-		fontWeight: theme.typography.fontWeight.semibold,
-		fontFamily: theme.typography.fontFamily,
+		width: "100%",
 	},
 
 	buttonRow: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		gap: theme.spacing.md,
-	},
-
-	actionButton: {
-		flex: 1,
-		paddingVertical: theme.spacing.md,
-		borderRadius: theme.button.radii,
-		alignItems: "center",
-	},
-
-	saveButton: {
-		backgroundColor: theme.colors.success,
-	},
-
-	cancelButton: {
-		backgroundColor: theme.colors.danger,
-	},
-
-	saveText: {
-		color: "white",
-		fontWeight: theme.typography.fontWeight.semibold,
-		fontFamily: theme.typography.fontFamily,
-	},
-
-	cancelText: {
-		color: "white",
-		fontWeight: theme.typography.fontWeight.semibold,
-		fontFamily: theme.typography.fontFamily,
 	},
 }));

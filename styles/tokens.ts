@@ -327,7 +327,7 @@ export const tokens: TokenSystem = {
 		formVerticalIcon: 0,
 	},
 	borderRadius: {
-		default: 16,
+		default: 20,
 		image: 12,
 		sheet: [16, 16, 0, 0],
 	},

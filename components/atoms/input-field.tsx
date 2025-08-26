@@ -1,4 +1,4 @@
-// components/atoms/input-field
+// components/atoms/input-field/index.tsx
 import React, { useState } from "react";
 import { useStyles, createStyleSheet } from "styles";
 import { View, TextInput, Platform } from "react-native";
@@ -15,7 +15,7 @@ export interface InputFieldProps {
 }
 
 export function InputField({
-	label = "Label",
+	label,
 	placeholder = "Enter text",
 	password = false,
 	multiline = false,
@@ -27,29 +27,33 @@ export function InputField({
 	const [focused, setFocused] = useState(false);
 
 	return (
-		<View style={styles.root} testID={testID ?? "529:19375"}>
+		<View style={styles.root} testID={testID ?? "InputField"}>
+			{/* Floating Label */}
+			{label && (
+				<View style={styles.labelWrapper}>
+					<Label text={label} testID={`${testID}-label`} />
+				</View>
+			)}
+
+			{/* Input Field Container */}
 			<View
 				style={[
-					styles.shadowWrapper,
-					multiline && styles.textFieldMultiline,
-					focused && styles.textFieldFocused,
+					styles.inputContainer,
+					multiline && styles.inputContainerMultiline,
+					focused && styles.inputContainerFocused,
 				]}
-				testID="529:19370"
+				testID={`${testID}-container`}
 			>
+				{/* Web Shadow Overlay */}
 				{Platform.OS === "web" && (
 					<View style={styles.shadowOverlay} pointerEvents="none" />
 				)}
 
-				{/* 🟦 Floating Label */}
-				{label && (
-					<View style={styles.labelWrapper}>
-						<Label text={label} testID="label" />
-					</View>
-				)}
-
+				{/* Text Input */}
 				<TextInput
 					style={[styles.input, multiline && styles.inputMultiline]}
 					placeholder={placeholder}
+					placeholderTextColor={styles.placeholderColor.color}
 					value={value}
 					onChangeText={onChangeText}
 					secureTextEntry={password}
@@ -58,8 +62,7 @@ export function InputField({
 					onBlur={() => setFocused(false)}
 					underlineColorAndroid="transparent"
 					disableFullscreenUI={true}
-					importantForAccessibility="no"
-					testID="input"
+					testID={`${testID}-input`}
 				/>
 			</View>
 		</View>
@@ -68,65 +71,76 @@ export function InputField({
 
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
-		width: 311,
-		paddingTop: 8,
+		width: "100%", // Use full width, let parent control sizing
+		height: theme.textField.size.defailt,
+		paddingTop: theme.spacing.sm, // 8px from theme
 		flexDirection: "column",
 		justifyContent: "center",
 		alignItems: "flex-start",
-		rowGap: 8,
-		columnGap: 8,
+		gap: theme.spacing.sm, // Use theme gap instead of rowGap/columnGap
 	},
-	textField: {
-		height: 40,
-		paddingHorizontal: 16,
+
+	labelWrapper: {
+		position: "absolute",
+		top: 2, // Adjust based on theme
+		left: 20,
+		zIndex: 10,
+		backgroundColor: theme.colors.background.default, // Ensure label has background
+		paddingHorizontal: theme.spacing.xs,
+	},
+
+	inputContainer: {
+		height: theme.textField.size.default, // Use theme height (40px)
+		paddingHorizontal: theme.spacing.md, // 16px from theme
 		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "stretch",
-		alignSelf: "stretch",
 		alignItems: "center",
 		alignSelf: "stretch",
-		borderRadius: 16,
+		borderRadius: theme.textField.borderRadius, // Use theme border radius
 		borderWidth: 2,
-		borderColor: "rgba(197, 197, 197, 1)",
-		backgroundColor: "white",
+		borderColor: theme.colors.neutral.grayLight, // Theme gray color
+		backgroundColor: theme.colors.background.default, // Theme background
+		shadowColor: theme.textField.shadow.color,
+		shadowRadius: theme.textField.shadow.blur,
+		shadowOffset: {
+			width: theme.textField.shadow.x,
+			height: theme.textField.shadow.y,
+		},
+		elevation: 2, // Android shadow
 	},
-	textFieldFocused: {
-		borderColor: "#0099CC",
+
+	inputContainerFocused: {
+		borderColor: theme.colors.info, // Use theme info color for focus
+		shadowColor: theme.colors.info,
+		shadowOpacity: 0.3,
 	},
-	textFieldMultiline: {
-		height: 100,
+
+	inputContainerMultiline: {
+		height: 100, // Fixed height for multiline
 		alignItems: "flex-start",
-		paddingVertical: 8,
+		paddingVertical: theme.spacing.sm,
 	},
+
 	input: {
 		flex: 1,
 		width: "100%",
 		height: "100%",
-		color: "#000",
-		fontFamily: "Work Sans",
-		fontSize: 16,
-		fontWeight: "600",
-
+		color: theme.colors.text.default, // Theme text color
+		fontFamily: theme.typography.fontFamily, // Theme font
+		fontSize: theme.typography.fontSize.base, // Theme font size
+		fontWeight: theme.typography.fontWeight.semibold, // Theme font weight
 		...Platform.select({
 			web: {
-				outlineStyle: "none",
+				outlineStyle: "none", // Remove web outline
 			},
 		}),
 	},
+
 	inputMultiline: {
-		textAlignVertical: "top",
+		textAlignVertical: "top", // For Android multiline
 	},
-	shadowWrapper: {
-		position: "relative",
-		height: 40,
-		borderRadius: 16,
-		borderWidth: 2,
-		borderColor: "rgba(197, 197, 197, 1)",
-		backgroundColor: "white",
-		paddingHorizontal: 16,
-		flexDirection: "row",
-		alignItems: "center",
-		alignSelf: "stretch",
+
+	placeholderColor: {
+		color: theme.colors.neutral.gray, // Theme placeholder color
 	},
 
 	shadowOverlay: {
@@ -136,17 +150,11 @@ const stylesheet = createStyleSheet((theme) => ({
 		right: 0,
 		bottom: 0,
 		pointerEvents: "none",
-		borderRadius: 16,
+		borderRadius: theme.card.borderRadius,
 		...Platform.select({
 			web: {
-				boxShadow: "inset 0 2px 5px rgba(0,0,0,0.15)",
+				boxShadow: `inset 0 ${theme.textField.shadow.y}px ${theme.textField.shadow.blur}px ${theme.textField.shadow.color}`,
 			},
 		}),
-	},
-	labelWrapper: {
-		position: "absolute",
-		top: -23,
-		left: 0,
-		zIndex: 10,
 	},
 }));

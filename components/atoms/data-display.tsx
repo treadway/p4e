@@ -3,7 +3,7 @@ import { useStyles, createStyleSheet } from "styles";
 import { useVariants } from "@/utils/useVariants";
 import { View, Text } from "react-native";
 import { Icon } from "components/atoms/icon";
-import CheckSvg from "assets/icons/tree-fill.svg";
+import TreeSvg from "assets/icons/tree-fill.svg";
 
 export interface DataDisplayProps {
 	iconPosition: (typeof DataDisplayVariants.iconPosition)[number];
@@ -28,7 +28,7 @@ export function DataDisplay(props: DataDisplayProps) {
 
 	return (
 		<View style={vstyles.root()} testID={props.testID ?? "data-display"}>
-			<Icon svg={CheckSvg} size={16} color="#00C851" stroke="#00C851" />
+			<Icon svg={TreeSvg} size={16} color="#00C851" stroke="#00C851" />
 
 			<Text style={vstyles.info()} testID="67:12757">
 				{`Data`}

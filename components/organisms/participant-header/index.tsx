@@ -198,9 +198,16 @@ export function ParticipantHeader({
 							<DataDisplay
 								iconPosition="Left"
 								size="Small"
-								testID={`${testID}-dataDisplay`}
+								value={participant.points}
+								iconName="tree"
+								style={{ width: "100%" }} // or flex: 1
+								testID={`${testID}-pointsDisplay`}
 							/>
 						</View>
+						<View
+							style={vstyles.participant()}
+							testID={`${testID}-participantSpacer`}
+						></View>
 						<View style={vstyles.getPoints()} testID={`${testID}-getPoints`}>
 							<Button
 								background="On"
@@ -395,13 +402,23 @@ const stylesheet = createStyleSheet((theme) => ({
 	},
 
 	points: {
-		flexDirection: "column",
-		alignItems: "flex-start",
-		rowGap: theme.spacing.sm,
-		columnGap: theme.spacing.sm,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-start",
 		flexGrow: 1,
-		flexShrink: 0,
+		flexShrink: 1,
 		flexBasis: 0,
+		// Ensure DataDisplay can expand to fill available space between image and button
+		minWidth: 0, // Allows flex shrinking
+	},
+
+	pointsDisplay: {
+		with: "100%",
+		minWidth: 0, // Allows flex shrinking
+	},
+
+	participantSpacer: {
+		width: theme.participantHeader.participantImage.size,
 	},
 
 	getPoints: {

@@ -157,6 +157,29 @@ export const lightTheme: Theme = {
 		color: tokens.colors.black["33"], // "#C5C5C5"
 		width: 0.5,
 	},
+
+	dataDisplay: {
+		padding: {
+			horizontal: tokens.padding.formHorizontalSmall,
+			vertical: tokens.padding.formVertical,
+		},
+		borderRadius: tokens.borderRadius.default,
+		border: {
+			width: tokens.border.button.width,
+			style: tokens.border.button.style,
+			color: tokens.border.button.color,
+		},
+		background: {
+			color: tokens.colors.green.dark[33],
+		},
+		text: {
+			color: tokens.colors.black[100],
+		},
+		icon: {
+			size: 14,
+			color: tokens.colors.link.light,
+		},
+	},
 };
 
 //
@@ -177,6 +200,11 @@ export const darkTheme: Theme = {
 		...lightTheme.divider,
 		// In dark theme, you might want a lighter divider color
 		color: tokens.colors.black["50"], // or keep the same: tokens.colors.black["33"]
+	},
+
+	dataDisplay: {
+		...lightTheme.dataDisplay,
+		// Dark theme could have different colors if needed
 	},
 };
 
@@ -296,5 +324,27 @@ export interface Theme {
 	divider: {
 		color: string;
 		width: number;
+	};
+	dataDisplay: {
+		padding: {
+			horizontal: number;
+			vertical: number;
+		};
+		borderRadius: number;
+		border: {
+			width: number;
+			style: string;
+			color: string;
+		};
+		background: {
+			color: string;
+		};
+		text: {
+			color: string;
+		};
+		icon: {
+			size: number;
+			color: string;
+		};
 	};
 }

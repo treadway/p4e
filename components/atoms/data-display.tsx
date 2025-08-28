@@ -1,24 +1,36 @@
-import { useStyles, createStyleSheet } from "styles";
-// import { useVariants } from "react-exo/utils";
+// components/atoms/DataDisplay.tsx
+import React from "react";
+import { View, Text, ViewStyle } from "react-native";
+import { useTheme, useStyles, createStyleSheet } from "styles";
 import { useVariants } from "@/utils/useVariants";
-import { View, Text } from "react-native";
 import { Icon } from "components/atoms/icon";
 import TreeSvg from "assets/icons/tree-fill.svg";
 
 export interface DataDisplayProps {
 	iconPosition: (typeof DataDisplayVariants.iconPosition)[number];
 	size: (typeof DataDisplayVariants.size)[number];
-	/** Used to locate this view in end-to-end tests. */
+	value?: string | number;
+	label?: string;
+	iconName?: string;
 	testID?: string;
+	style?: ViewStyle;
 }
 
 export const DataDisplayVariants = {
 	iconPosition: ["Left", "Right"],
-	size: ["Small", "Large"],
+	size: ["Small", "Default"],
 } as const;
 
-export function DataDisplay(props: DataDisplayProps) {
-	const { iconPosition, size } = props;
+export function DataDisplay({
+	iconPosition,
+	size,
+	value = "Data",
+	label,
+	iconName = "tree",
+	testID,
+	style,
+}: DataDisplayProps) {
+	const theme = useTheme();
 	const { styles } = useStyles(stylesheet);
 	const { vstyles } = useVariants(
 		DataDisplayVariants,
@@ -26,13 +38,39 @@ export function DataDisplay(props: DataDisplayProps) {
 		styles
 	);
 
-	return (
-		<View style={vstyles.root()} testID={props.testID ?? "data-display"}>
-			<Icon svg={TreeSvg} size={16} color="#00C851" stroke="#00C851" />
+	const displayValue =
+		typeof value === "number" ? value.toLocaleString() : value;
 
-			<Text style={vstyles.info()} testID="67:12757">
-				{`Data`}
+	const iconTestID = testID
+		? `${testID}-icon-${iconName}`
+		: `DataDisplay-icon-${iconName}`;
+
+	return (
+		<View style={[vstyles.root(), style]} testID={testID ?? "DataDisplay"}>
+			{iconPosition === "Left" && (
+				<Icon
+					svg={TreeSvg}
+					size={theme.dataDisplay.icon.size}
+					color={theme.dataDisplay.icon.color}
+					testID={iconTestID}
+				/>
+			)}
+
+			<Text
+				style={vstyles.valueText()}
+				testID={`${testID ?? "DataDisplay"}-value`}
+			>
+				{displayValue}
 			</Text>
+
+			{iconPosition === "Right" && (
+				<Icon
+					svg={TreeSvg}
+					size={theme.dataDisplay.icon.size}
+					color={theme.dataDisplay.icon.color}
+					testID={iconTestID}
+				/>
+			)}
 		</View>
 	);
 }
@@ -40,49 +78,41 @@ export function DataDisplay(props: DataDisplayProps) {
 const stylesheet = createStyleSheet((theme) => ({
 	root: {
 		flexDirection: "row",
-		paddingTop: 4,
-		paddingLeft: 12,
-		paddingBottom: 4,
-		paddingRight: 12,
 		alignItems: "center",
-		rowGap: 4,
-		columnGap: 4,
-		borderBottomLeftRadius: 54,
-		borderBottomRightRadius: 54,
-		borderTopLeftRadius: 54,
-		borderTopRightRadius: 54,
-		borderWidth: 1,
-		borderStyle: "solid",
-		borderColor: "rgba(0, 200, 81, 1)",
-		backgroundColor: "rgba(241, 246, 217, 1)",
+		justifyContent: "left",
+		paddingHorizontal: theme.dataDisplay.padding.horizontal,
+		paddingVertical: theme.dataDisplay.padding.vertical,
+		borderRadius: theme.dataDisplay.borderRadius,
+		backgroundColor: theme.dataDisplay.background.color,
+		borderWidth: theme.button.border.width,
+		borderStyle: theme.button.border.style,
+		borderColor: theme.button.border.color,
+		gap: theme.spacing.xs,
+		alignSelf: "flex-start",
 	},
-	rootIconPositionRightSizeLarge: {
-		justifyContent: "flex-end",
+
+	valueText: {
+		fontFamily: theme.typography.fontFamily,
+		fontSize: theme.typography.fontSize.sm,
+		fontWeight: theme.typography.fontWeight.bold,
+		color: theme.dataDisplay.text.color,
 	},
+
 	rootIconPositionLeftSizeSmall: {
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		flexShrink: 0,
+		paddingHorizontal: theme.dataDisplay.padding.horizontal * 0.75,
+		paddingVertical: theme.dataDisplay.padding.vertical * 0.75,
 	},
+
 	rootIconPositionRightSizeSmall: {
-		height: 24,
-		paddingLeft: 8,
-		paddingRight: 8,
-		justifyContent: "flex-end",
-		flexShrink: 0,
+		paddingHorizontal: theme.dataDisplay.padding.horizontal * 0.75,
+		paddingVertical: theme.dataDisplay.padding.vertical * 0.75,
 	},
-	info: {
-		color: "Neutral.Gray.100",
-		fontFamily: "Work Sans",
-		fontSize: 16,
-		fontStyle: "normal",
-		fontWeight: "700",
+
+	valueTextIconPositionLeftSizeSmall: {
+		fontSize: theme.typography.fontSize.xs,
 	},
-	infoIconPositionLeftSizeSmall: {
-		fontSize: 12,
-	},
-	infoIconPositionRightSizeSmall: {
-		fontSize: 12,
+
+	valueTextIconPositionRightSizeSmall: {
+		fontSize: theme.typography.fontSize.xs,
 	},
 }));
